@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/mylex.dir/src/main.c.o CMakeFiles/mylex.dir/src/util.c.o CMakeFiles/mylex.dir/lexer.c.o -o mylex  /usr/lib/x86_64-linux-gnu/libfl.so 

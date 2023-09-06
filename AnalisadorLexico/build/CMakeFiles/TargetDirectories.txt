@@ -1,0 +1,5 @@
+/home/bmfranzini/CTC-41/AnalisadorLexico/build/CMakeFiles/mylex.dir
+/home/bmfranzini/CTC-41/AnalisadorLexico/build/CMakeFiles/runmylex.dir
+/home/bmfranzini/CTC-41/AnalisadorLexico/build/CMakeFiles/rundiff.dir
+/home/bmfranzini/CTC-41/AnalisadorLexico/build/CMakeFiles/edit_cache.dir
+/home/bmfranzini/CTC-41/AnalisadorLexico/build/CMakeFiles/rebuild_cache.dir

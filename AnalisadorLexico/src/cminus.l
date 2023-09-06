@@ -10,12 +10,14 @@
 #include "scan.h"
 /* lexeme of identifier or reserved word */
 char tokenString[MAXTOKENLEN+1];
+
+int currentLine = 0;
 %}
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
 identifier  {letter}+
-newline     \r\n
+newline     (\n|\r\n)
 whitespace  [ \t]+
 %%
 "if"            {return IF;}
@@ -47,32 +49,56 @@ whitespace  [ \t]+
 {identifier}    {return ID;}
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
-"/*"            { char c, prev = 0;
-                  do
-                  {
+"/*"            {
+                  char c;
+                  int nest_level = 1;
+                  while (nest_level > 0) {
                     c = input();
                     if (c == EOF) break;
                     if (c == '\n') lineno++;
-                    if (prev == '*' && c == '/') break;  // Encontrou o fechamento do comentário
-                    prev = c;
-                  } while (1);
+                    if (c == '*' && (c = input()) == '/') {
+                      nest_level--;
+                    } else if (c == '/' && (c = input()) == '*') {
+                      nest_level++;
+                    }
+                  }
                 }
+
 .               {return ERROR;}
 %%
 TokenType getToken(void)
-{ static int firstTime = TRUE;
+{ 
+  static int firstTime = TRUE;
   TokenType currentToken;
+
   if (firstTime)
-  { firstTime = FALSE;
+  { 
+    firstTime = FALSE;
     lineno++;
     yyin = source;
     yyout = listing;
   }
+
   currentToken = yylex();
-  strncpy(tokenString,yytext,MAXTOKENLEN);
-  if (TraceScan) {
-    fprintf(listing,"\t%d: ",lineno);
-    printToken(currentToken,tokenString);
+  strncpy(tokenString, yytext, MAXTOKENLEN);
+
+  while (lineno != currentLine) {
+    if (lines[currentLine] != NULL)
+      fprintf(listing, "%d: %s", currentLine+1, lines[currentLine]);
+    else
+      fprintf(listing, "%d: \n", currentLine+1);
+    currentLine++;
   }
+
+  if (lines[lineno-1] == '\n') {
+    fprintf(listing, "%d: ", lineno);
+  }
+
+  if (TraceScan)
+  {
+    fprintf(listing, "\t%d: ", lineno);
+    printToken(currentToken, tokenString);
+  }
+  
   return currentToken;
 }

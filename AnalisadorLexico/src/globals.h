@@ -41,6 +41,10 @@ extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */
 
 extern int lineno; /* source line number for listing */
+extern int currentLine;
+extern int line_count;
+//extern char lines[50][50];
+extern char *lines[100]; // Matriz de ponteiros para linhas
 
 /**************************************************/
 /***********   Syntax tree for parsing ************/

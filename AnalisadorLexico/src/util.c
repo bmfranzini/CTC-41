@@ -42,6 +42,7 @@ void printToken( TokenType token, const char* tokenString )
     case RBRACKET: fprintf(listing,"]\n"); break;
     case LBRACE: fprintf(listing,"{\n"); break;
     case RBRACE: fprintf(listing,"}\n"); break;
+    case ENDFILE: fprintf(listing,"EOF\n"); break;
     case NUM:
       fprintf(listing,
           "NUM, val= %s\n",tokenString);
@@ -54,6 +55,7 @@ void printToken( TokenType token, const char* tokenString )
       fprintf(listing,
           "ERROR: %s\n",tokenString);
       break;
+
     default: /* should never happen */
       fprintf(listing,"Unknown token: %d\n",token);
   }

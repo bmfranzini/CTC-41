@@ -35,6 +35,7 @@ int lineno = 0;
 FILE * source;
 FILE * listing;
 FILE * code;
+char *lines[100];
 
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
@@ -60,8 +61,50 @@ int main( int argc, char * argv[] )
   { fprintf(stderr,"File %s not found\n",pgm);
     exit(1);
   }
+  
+
+
+  char buffer[1024]; // Buffer temporário para ler cada linha
+  //char *lines[100];
+  int line_count = 0; // Contador de linhas
+
+  // Ler o arquivo linha por linha
+  while (fgets(buffer, sizeof(buffer), source) != NULL) {
+      // Alocar memória para a linha e copiá-la para a matriz
+      lines[line_count] = strdup(buffer);
+
+      if (lines[line_count] == NULL) {
+          fprintf(stderr, "Erro de alocação de memória.\n");
+          return 1;
+      }
+
+      line_count++;
+
+      if (line_count >= 100) {
+          fprintf(stderr, "Muitas linhas no arquivo.\n");
+          return 1;
+      }
+  }
+
+  /*for (int i = 0; i < line_count; i++) {
+        printf("Linha %d: %s\n", i + 1, lines[i]);
+  }*/
+  fclose(source);
+
+
+  strcpy(pgm,argv[1]) ;
+  if (strchr (pgm, '.') == NULL)
+     strcat(pgm,".tny");
+  source = fopen(pgm,"r");
+  if (source==NULL)
+  { fprintf(stderr,"File %s not found\n",pgm);
+    exit(1);
+  }
   listing = stdout; /* send listing to screen */
-  fprintf(listing,"\nTINY COMPILATION: %s\n",pgm);
+  fprintf(listing,"\nC- COMPILATION: %s\n",pgm);
+
+  
+
 #if NO_PARSE
   while (getToken()!=ENDFILE);
 #else
@@ -97,6 +140,10 @@ int main( int argc, char * argv[] )
 #endif
 #endif
   fclose(source);
+  /*
+  for (int i = 0; i < line_count; i++) {
+        free(lines[i]);
+  }*/
   return 0;
 }
 
