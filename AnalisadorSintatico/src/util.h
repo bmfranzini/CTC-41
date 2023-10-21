@@ -9,7 +9,7 @@
 #define _UTIL_H_
 
 /* Procedure printToken prints a token 
- * and its lexeme 
+ * and its lexeme to the listing file
  */
 void printToken( TokenType, const char* );
 
@@ -23,13 +23,14 @@ TreeNode * newStmtNode(StmtKind);
  */
 TreeNode * newExpNode(ExpKind);
 
+TreeNode * newDecNode(DecKind);
 /* Function copyString allocates and makes a new
  * copy of an existing string
  */
 char * copyString( char * );
 
-/* procedure printTree prints a syntax tree 
- * using indentation to indicate subtrees
+/* procedure printTree prints a syntax tree to the 
+ * listing file using indentation to indicate subtrees
  */
 void printTree( TreeNode * );
 
