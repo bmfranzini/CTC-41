@@ -106,11 +106,14 @@ TreeNode * newDecNode(DecKind kind)
         pce("Out of memory error at line %d\n", lineno);
     else 
     {
+        // pce("noh criado\n");
         for (i = 0; i < MAXCHILDREN; i++) t->child[i] = NULL;
         t->sibling = NULL;
         t->nodekind = DecK;
         t->kind.dec = kind;
         t->lineno = lineno;
+        pce("kind = %d\n", kind);
+        // pce("final do noh\n");
     }
     return t;
 }
@@ -119,7 +122,9 @@ TreeNode * newDecNode(DecKind kind)
  * copy of an existing string
  */
 char * copyString(char * s)
-{ int n;
+{ 
+  // fprintf(stderr,"Entrou no copyString, s = %s\n", s);
+  int n;
   char * t;
   if (s==NULL) return NULL;
   n = strlen(s)+1;
@@ -149,54 +154,84 @@ static void printSpaces(void)
 /* procedure printTree prints a syntax tree to the 
  * listing file using indentation to indicate subtrees
  */
-void printTree( TreeNode * tree )
-{ int i;
-  INDENT;
-  while (tree != NULL) {
-    printSpaces();
-    if (tree->nodekind==StmtK)
-    { switch (tree->kind.stmt) {
-        case IfK:
-          fprintf(listing,"If\n");
-          break;
-        case RepeatK:
-          fprintf(listing,"Repeat\n");
-          break;
-        case AssignK:
-          fprintf(listing,"Assign to: %s\n",tree->attr.name);
-          break;
-        case ReadK:
-          fprintf(listing,"Read: %s\n",tree->attr.name);
-          break;
-        case WriteK:
-          fprintf(listing,"Write\n");
-          break;
-        default:
-          fprintf(listing,"Unknown ExpNode kind\n");
-          break;
-      }
+void printTree(TreeNode *tree)
+{
+    int i;
+    INDENT;
+
+    while (tree != NULL) 
+    {
+        printSpaces();
+
+        if (tree->nodekind == StmtK) 
+        {
+            switch (tree->kind.stmt) 
+            {
+                case IfK:
+                    fprintf(listing, "If\n");
+                    break;
+                case AssignK:
+                    fprintf(listing, "Assign to: %s\n", tree->attr.name);
+                    break;
+                default:
+                    fprintf(listing, "Unknown StmtNode kind\n");
+                    break;
+            }
+        } 
+        else if (tree->nodekind == ExpK) 
+        {
+            switch (tree->kind.exp) 
+            {
+                case OpK:
+                    fprintf(listing, "Op: ");
+                    printToken(tree->attr.op, "\0");
+                    break;
+                case ConstK:
+                    fprintf(listing, "Const: %d\n", tree->attr.val);
+                    break;
+                case IdK:
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
+                    break;
+                // Adicione aqui outros cases para os tipos ExpKind se necessário
+                default:
+                    fprintf(listing, "Unknown ExpNode kind\n");
+                    break;
+            }
+        } 
+        else if (tree->nodekind == DecK) 
+        {
+            switch (tree->kind.dec) 
+            {
+                case VarDecK:
+                    fprintf(listing, "Var Declaration: %s\n", tree->attr.name);
+                    break;
+                case ArrDecK:
+                    fprintf(listing, "Array Declaration: %s[%d]\n", tree->attr.name, tree->attr.val);
+                    break;
+                case FunDecK:
+                    fprintf(listing, "Function Declaration: %s\n", tree->attr.name);
+                    break;
+                case ParamK:
+                    fprintf(listing, "Parameter: %s\n", tree->attr.name);
+                    break;
+                case DeclarationK:
+                    fprintf(listing, "Declaration: %s\n", tree->attr.name);
+                    break;
+                default:
+                    fprintf(listing, "Unknown DecNode kind\n");
+                    break;
+            }
+        } 
+        else 
+        {
+            fprintf(listing, "Unknown node kind\n");
+        }
+
+        for (i = 0; i < MAXCHILDREN; i++)
+            printTree(tree->child[i]);
+
+        tree = tree->sibling;
     }
-    else if (tree->nodekind==ExpK)
-    { switch (tree->kind.exp) {
-        case OpK:
-          fprintf(listing,"Op: ");
-          printToken(tree->attr.op,"\0");
-          break;
-        case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
-          break;
-        case IdK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
-          break;
-        default:
-          fprintf(listing,"Unknown ExpNode kind\n");
-          break;
-      }
-    }
-    else fprintf(listing,"Unknown node kind\n");
-    for (i=0;i<MAXCHILDREN;i++)
-         printTree(tree->child[i]);
-    tree = tree->sibling;
-  }
-  UNINDENT;
+    UNINDENT;
 }
+

@@ -79,7 +79,7 @@ typedef struct treeNode
      int lineno;
      NodeKind nodekind;
      union { StmtKind stmt; ExpKind exp;} kind;
-     union { TokenType op;
+     union { yytoken_kind_t op;
              int val;
              char * name; } attr;
      ExpType type; /* for type checking of exps */

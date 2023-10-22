@@ -13,6 +13,20 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include "log.h"
+
+#ifndef YYPARSER
+
+/* the name of the following file may change */
+//#include "tiny.tab.h"
+#include "parser.h"
+
+/* ENDFILE is implicitly defined by Yacc/Bison,
+ * and not included in the tab.h file
+ */
+#define ENDFILE 0
+
+#endif
 
 #ifndef FALSE
 #define FALSE 0
@@ -25,16 +39,18 @@
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 8
 
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE, ERROR,
-    /* reserved words */
-    IF, ELSE, INT, RETURN, VOID, WHILE,
-    /* multicharacter tokens */
-    PLUS, MINUS, TIMES, OVER, EQ, NEQ, LT, LEQ, GT, GEQ,
-    /* special symbols */
-    ASSIGN, SEMI, COMMA, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, NUM, ID
-   } TokenType;
+typedef int TokenType; 
+
+// typedef enum 
+//     /* book-keeping tokens */
+//    {ENDFILE, ERROR,
+//     /* reserved words */
+//     IF, ELSE, INT, RETURN, VOID, WHILE,
+//     /* multicharacter tokens */
+//     PLUS, MINUS, TIMES, OVER, EQUAL, DIF, LT, LET, BT, BET,
+//     /* special symbols */
+//     ASSIGN, SEMI, COMMA, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, NUM, ID
+//    } TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -51,7 +67,7 @@ extern char *lines[100]; // Matriz de ponteiros para linhas
 /**************************************************/
 
 typedef enum {StmtK, ExpK, DecK} NodeKind; // Adding DecK for Declarations
-typedef enum {IfK, WhileK, AssignK, ReturnK, CallK} StmtKind; // Adjusted kinds
+typedef enum {IfK, WhileK, AssignK, ReturnK, CallK, CompoundK} StmtKind; // Adjusted kinds
 typedef enum {OpK, ConstK, IdK, VarK, ArrK, FunK} ExpKind; // Expanded expression kinds
 typedef enum {DeclarationK, VarDecK, FunDecK, ParamK, ArrDecK} DecKind; // Added declaration kinds
 
@@ -60,17 +76,24 @@ typedef enum {Void, Integer} ExpType; // Removed Boolean
 #define MAXCHILDREN 3
 
 typedef struct treeNode
-   { struct treeNode * child[MAXCHILDREN];
-     struct treeNode * sibling;
-     int lineno;
-     NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp;} kind;
-     union { TokenType op;
-             int val;
-             char * name; } attr;
-     ExpType type; /* for type checking of exps */
-   } TreeNode;
-
+{
+    struct treeNode *child[MAXCHILDREN];
+    struct treeNode *sibling;
+    int lineno;
+    NodeKind nodekind;
+    union { 
+        StmtKind stmt; 
+        ExpKind exp; 
+        DecKind dec;   // Adicionando DecKind ao kind
+    } kind;
+    union { 
+        TokenType op;
+        int val;
+        char *name;
+        // Aqui você pode adicionar mais campos, se declarações tiverem atributos adicionais
+    } attr;
+    ExpType type; /* for type checking of exps */
+} TreeNode;
 /**************************************************/
 /***********   Flags for tracing       ************/
 /**************************************************/

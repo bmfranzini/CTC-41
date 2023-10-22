@@ -61,9 +61,9 @@ whitespace  [ \t]+
 
 %%
 
-TokenType getToken(void)
+yytoken_kind_t getToken(void)
 { static int firstTime = TRUE;
-  TokenType currentToken;
+  yytoken_kind_t currentToken;
   if (firstTime)
   { firstTime = FALSE;
     lineno++;

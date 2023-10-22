@@ -45,42 +45,69 @@ static void nullProc(TreeNode * t)
  * identifiers stored in t into 
  * the symbol table 
  */
-static void insertNode( TreeNode * t)
-{ switch (t->nodekind)
-  { case StmtK:
-      switch (t->kind.stmt)
-      { case AssignK:
-        case ReadK:
-          if (st_lookup(t->attr.name) == -1)
-          /* not yet in table, so treat as new definition */
-            st_insert(t->attr.name,t->lineno,location++);
-          else
-          /* already in table, so ignore location, 
-             add line number of use only */ 
-            st_insert(t->attr.name,t->lineno,0);
-          break;
+static void insertNode(TreeNode * t)
+{
+    switch (t->nodekind)
+    {
+        case StmtK:
+            switch (t->kind.stmt)
+            {
+                case AssignK:
+                    if (st_lookup(t->attr.name) == -1)
+                        st_insert(t->attr.name, t->lineno, location++);
+                    else
+                        st_insert(t->attr.name, t->lineno, 0);
+                    break;
+
+                // Remove o case ReadK, pois C- pode não tê-lo.
+                // case ReadK:
+                //     ...
+
+                // Adicione casos adicionais se C- tiver outras instruções que requerem inserção na tabela de símbolos.
+                
+                default:
+                    break;
+            }
+            break;
+
+        case ExpK:
+            switch (t->kind.exp)
+            {
+                case IdK:
+                case VarK:  // Presumindo que VarK seja uma enum para variáveis no C-
+                case ArrK:  // Presumindo que ArrK seja uma enum para arrays no C-
+                    if (st_lookup(t->attr.name) == -1)
+                        st_insert(t->attr.name, t->lineno, location++);
+                    else
+                        st_insert(t->attr.name, t->lineno, 0);
+                    break;
+
+                // Adicione lógica para outros tipos de expressões, se necessário.
+
+                default:
+                    break;
+            }
+            break;
+        case DecK:  // Presumindo que DecK seja uma enum para declarações no C-
+            switch (t->kind.dec)
+            {
+                case FunK:    // Para funções.
+                case VarDecK: // Para declarações de variáveis.
+                case ArrDecK: // Para declarações de arrays.
+                    if (st_lookup(t->attr.name) == -1)
+                        st_insert(t->attr.name, t->lineno, location++);
+                    else
+                        st_insert(t->attr.name, t->lineno, 0);
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
         default:
-          break;
-      }
-      break;
-    case ExpK:
-      switch (t->kind.exp)
-      { case IdK:
-          if (st_lookup(t->attr.name) == -1)
-          /* not yet in table, so treat as new definition */
-            st_insert(t->attr.name,t->lineno,location++);
-          else
-          /* already in table, so ignore location, 
-             add line number of use only */ 
-            st_insert(t->attr.name,t->lineno,0);
-          break;
-        default:
-          break;
-      }
-      break;
-    default:
-      break;
-  }
+            break;
+    }
 }
 
 /* Function buildSymtab constructs the symbol 
@@ -103,53 +130,98 @@ static void typeError(TreeNode * t, char * message)
  * type checking at a single tree node
  */
 static void checkNode(TreeNode * t)
-{ switch (t->nodekind)
-  { case ExpK:
-      switch (t->kind.exp)
-      { case OpK:
-          if ((t->child[0]->type != Integer) ||
-              (t->child[1]->type != Integer))
-            typeError(t,"Op applied to non-integer");
-          if ((t->attr.op == EQ) || (t->attr.op == LT))
-            t->type = Boolean;
-          else
-            t->type = Integer;
-          break;
-        case ConstK:
-        case IdK:
-          t->type = Integer;
-          break;
-        default:
-          break;
-      }
-      break;
-    case StmtK:
-      switch (t->kind.stmt)
-      { case IfK:
-          if (t->child[0]->type == Integer)
-            typeError(t->child[0],"if test is not Boolean");
-          break;
-        case AssignK:
-          if (t->child[0]->type != Integer)
-            typeError(t->child[0],"assignment of non-integer value");
-          break;
-        case WriteK:
-          if (t->child[0]->type != Integer)
-            typeError(t->child[0],"write of non-integer value");
-          break;
-        case RepeatK:
-          if (t->child[1]->type == Integer)
-            typeError(t->child[1],"repeat test is not Boolean");
-          break;
-        default:
-          break;
-      }
-      break;
-    default:
-      break;
+{
+    switch (t->nodekind)
+    {
+        case ExpK:
+            switch (t->kind.exp)
+            {
+                case OpK:
+                    if ((t->child[0]->type != Integer) || (t->child[1]->type != Integer))
+                        typeError(t, "Op applied to non-integer");
+                    t->type = Integer; // Assumindo que todas as operações retornam inteiros.
+                    break;
 
-  }
+                case ConstK:
+                    t->type = Integer;
+                    break;
+
+                case IdK:
+                case VarK:
+                    t->type = Integer; // Se as variáveis e identificadores forem sempre inteiros em C-
+                    break;
+
+                case ArrK:
+                    t->type = Integer; // Arrays em C- devem ser do tipo inteiro.
+                    break;
+
+                case FunK:
+                    // Como as funções em C- podem ter tipo Void ou Integer, 
+                    // pode ser necessário realizar verificações adicionais aqui para determinar o tipo.
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        case StmtK:
+            switch (t->kind.stmt)
+            {
+                case IfK:
+                case WhileK:
+                    if (t->child[0]->type != Integer)  // Considerando que em C- as condições são inteiros.
+                        typeError(t->child[0], "Conditional test is not Integer");
+                    break;
+
+                case AssignK:
+                    if (t->child[0]->type != Integer)
+                        typeError(t->child[0], "assignment of non-integer value");
+                    break;
+
+                case ReturnK:
+                    // Pode ser necessário adicionar verificações adicionais para as instruções de retorno,
+                    // dependendo de como as funções são definidas em C-.
+                    break;
+
+                case CallK:
+                    // Pode ser necessário adicionar verificações para chamadas de função.
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        case DecK:
+            switch (t->kind.dec)
+            {
+                case DeclarationK:
+                case VarDecK:
+                case ArrDecK:
+                    t->type = Integer; // Supondo que todas as declarações sejam de inteiros.
+                    break;
+
+                case FunDecK:
+                    // O tipo da função dependerá de sua declaração em C-.
+                    // Pode ser Integer ou Void.
+                    break;
+
+                case ParamK:
+                    t->type = Integer; // Supondo que todos os parâmetros sejam inteiros.
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        default:
+            break;
+    }
 }
+
+
 
 /* Procedure typeCheck performs type checking 
  * by a postorder syntax tree traversal

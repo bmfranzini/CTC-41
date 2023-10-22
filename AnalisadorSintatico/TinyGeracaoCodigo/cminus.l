@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "util.h"
 #include "scan.h"
+#include "parser.h"
 /* lexeme of identifier or reserved word */
 char tokenString[MAXTOKENLEN+1];
 static int yylex(void);
@@ -61,9 +62,9 @@ whitespace  [ \t]+
 
 %%
 
-TokenType getToken(void)
+yytoken_kind_t getToken(void)
 { static int firstTime = TRUE;
-  TokenType currentToken;
+  yytoken_kind_t currentToken;
   if (firstTime)
   { firstTime = FALSE;
     lineno++;
@@ -73,8 +74,8 @@ TokenType getToken(void)
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
-    pc("\t%d: ",lineno);
-    printToken(currentToken,tokenString);
+    //pc("\t%d: ",lineno);
+    //printToken(currentToken,tokenString);
   }
   return currentToken;
 }
