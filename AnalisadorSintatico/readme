@@ -1,0 +1,3 @@
+cd AnalisadorSintatico/src
+
+flex cminus.l && bison -d cminus.y -o parser.c && gcc *.c ../lib/log.c -o cminus -lfl -I../lib && ./cminus teste.cm
