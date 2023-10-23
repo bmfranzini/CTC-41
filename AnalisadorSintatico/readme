@@ -9,3 +9,5 @@ sudo cmake ..
 sudo make
 chmod +x ../scripts/runlex
 chmod +x ../scripts/rundiff
+
+ ../build/mylex ../example/missing_key.cm
