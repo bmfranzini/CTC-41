@@ -38,13 +38,12 @@ int yyerror(char *);
 %% /* Grammar for TINY */
 
 programa:
-    declaracao_lista {fprintf(stdout, "1aq "); savedTree = $1; }
+    declaracao_lista { savedTree = $1; }
 ;
 
 declaracao_lista:
     declaracao_lista declaracao 
     { 
-        fprintf(stdout, "20aq\n");
         YYSTYPE t = $1;
         if (t != NULL) {
             while (t->sibling != NULL) t = t->sibling;
@@ -66,7 +65,6 @@ var_declaracao:
     tipo_especificador ID { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; } SEMI
     { 
-        fprintf(stdout, "9.1aq \n");
         $$ = $1;
         YYSTYPE newNodeS2 = newExpNode(IdK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
@@ -165,20 +163,14 @@ param:
 composto_decl:
     LBRACE local_declaracoes statement_lista RBRACE
         {
-            //fprintf(stdout, "16aq\n");
             if($2 != NULL){
                 $$ = $2;
                 YYSTYPE t = $$;
-                //fprintf(stdout, "16.5aq\n");
                 while (t->sibling) t = t->sibling;
                 t->sibling = $3;
-                
-                //fprintf(stdout, "17aq\n");
             }
             else {
-                //fprintf(stdout, "18aq\n");
                 $$ = $3;
-                //fprintf(stdout, "19aq\n");
             }
         }
     ;
@@ -186,21 +178,17 @@ composto_decl:
 local_declaracoes:
     local_declaracoes var_declaracao
         {
-            fprintf(stdout, "8aq \n");
             YYSTYPE t = $1;
             if (t != NULL) {
-                fprintf(stdout, "8.1aq \n");
                 while (t->sibling) t = t->sibling;
                 t->sibling = $2;
                 $$ = $1;
             } else {
-                fprintf(stdout, "8.2aq \n");
                 $$ = $2;
             }
         }
     | /* vazio */
         {
-            fprintf(stdout, "9aq ");
             $$ = NULL;
             //$$ = $2;
         }
@@ -209,23 +197,17 @@ local_declaracoes:
 statement_lista:
     statement_lista statement
         {
-            fprintf(stdout, "11aq ");
             YYSTYPE t = $1;
             if (t != NULL) {
                 while (t->sibling) t = t->sibling;
                 t->sibling = $2;
-                fprintf(stdout, "14aq\n");
-
                 $$ = $1;
             } else {
-                fprintf(stdout, "15aq\n");
                 $$ = $2;
             }
-            fprintf(stdout, "13aq\n");
         }
     | /* vazio */
         {
-            fprintf(stdout, "12aq ");
             $$ = NULL;
         }
     ;

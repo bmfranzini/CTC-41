@@ -579,14 +579,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    41,    41,    45,    57,    61,    62,    66,    66,    76,
-      77,    76,    96,   102,   111,   111,   129,   130,   134,   141,
-     145,   145,   154,   154,   166,   187,   202,   210,   227,   234,
-     237,   240,   243,   246,   252,   256,   263,   269,   279,   288,
-     292,   300,   306,   312,   312,   319,   319,   330,   338,   344,
-     349,   354,   359,   364,   369,   377,   383,   389,   394,   402,
-     410,   416,   421,   429,   432,   435,   438,   438,   448,   448,
-     460,   464,   470,   481
+       0,    41,    41,    45,    56,    60,    61,    65,    65,    74,
+      75,    74,    94,   100,   109,   109,   127,   128,   132,   139,
+     143,   143,   152,   152,   164,   179,   191,   198,   210,   216,
+     219,   222,   225,   228,   234,   238,   245,   251,   261,   270,
+     274,   282,   288,   294,   294,   301,   301,   312,   320,   326,
+     331,   336,   341,   346,   351,   359,   365,   371,   376,   384,
+     392,   398,   403,   411,   414,   417,   420,   420,   430,   430,
+     442,   446,   452,   463
 };
 #endif
 
@@ -1227,14 +1227,13 @@ yyreduce:
     {
   case 2: /* programa: declaracao_lista  */
 #line 41 "cminus.y"
-                     {fprintf(stdout, "1aq "); savedTree = yyvsp[0]; }
+                     { savedTree = yyvsp[0]; }
 #line 1232 "parser.c"
     break;
 
   case 3: /* declaracao_lista: declaracao_lista declaracao  */
 #line 46 "cminus.y"
     { 
-        fprintf(stdout, "20aq\n");
         YYSTYPE t = yyvsp[-1];
         if (t != NULL) {
             while (t->sibling != NULL) t = t->sibling;
@@ -1244,63 +1243,62 @@ yyreduce:
             yyval = yyvsp[0];
         }
     }
-#line 1248 "parser.c"
+#line 1247 "parser.c"
     break;
 
   case 4: /* declaracao_lista: declaracao  */
-#line 57 "cminus.y"
+#line 56 "cminus.y"
                  { yyval = yyvsp[0]; }
-#line 1254 "parser.c"
+#line 1253 "parser.c"
     break;
 
   case 5: /* declaracao: var_declaracao  */
-#line 61 "cminus.y"
+#line 60 "cminus.y"
                    { yyval = yyvsp[0]; }
-#line 1260 "parser.c"
+#line 1259 "parser.c"
     break;
 
   case 6: /* declaracao: fun_declaracao  */
-#line 62 "cminus.y"
+#line 61 "cminus.y"
                      { yyval = yyvsp[0]; }
-#line 1266 "parser.c"
+#line 1265 "parser.c"
     break;
 
   case 7: /* $@1: %empty  */
-#line 66 "cminus.y"
+#line 65 "cminus.y"
                           { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1273 "parser.c"
+#line 1272 "parser.c"
     break;
 
   case 8: /* var_declaracao: tipo_especificador ID $@1 SEMI  */
-#line 68 "cminus.y"
+#line 67 "cminus.y"
     { 
-        fprintf(stdout, "9.1aq \n");
         yyval = yyvsp[-3];
         YYSTYPE newNodeS2 = newExpNode(IdK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
         yyvsp[-3]->child[0] = newNodeS2;
     }
-#line 1286 "parser.c"
+#line 1284 "parser.c"
     break;
 
   case 9: /* $@2: %empty  */
-#line 76 "cminus.y"
+#line 74 "cminus.y"
                             { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1293 "parser.c"
+#line 1291 "parser.c"
     break;
 
   case 10: /* $@3: %empty  */
-#line 77 "cminus.y"
+#line 75 "cminus.y"
                                                         { savedNameVarDeclaracao2 = copyString(tokenString);
                    savedLineNo2 = lineno; }
-#line 1300 "parser.c"
+#line 1298 "parser.c"
     break;
 
   case 11: /* var_declaracao: tipo_especificador ID $@2 LBRACKET NUM $@3 RBRACKET SEMI  */
-#line 79 "cminus.y"
+#line 77 "cminus.y"
     { 
         yyval = yyvsp[-7];
         YYSTYPE newNodeS2 = newExpNode(IdK);
@@ -1314,38 +1312,38 @@ yyreduce:
         newNodeS2->child[0] = newNodeS3;
 
     }
-#line 1318 "parser.c"
+#line 1316 "parser.c"
     break;
 
   case 12: /* tipo_especificador: INT  */
-#line 97 "cminus.y"
+#line 95 "cminus.y"
     { 
         yyval = newDecNode(DeclarationK); 
         yyval->type = Integer;
         yyval->attr.name = copyString("int");
     }
-#line 1328 "parser.c"
+#line 1326 "parser.c"
     break;
 
   case 13: /* tipo_especificador: VOID  */
-#line 103 "cminus.y"
+#line 101 "cminus.y"
     { 
         yyval = newDecNode(DeclarationK); 
         yyval->type = Void;
         yyval->attr.name = copyString("void");
     }
-#line 1338 "parser.c"
+#line 1336 "parser.c"
     break;
 
   case 14: /* $@4: %empty  */
-#line 111 "cminus.y"
+#line 109 "cminus.y"
                           { savedNameFunDeclaracao = copyString(lastTokenString);
                   savedLineNo = lineno; }
-#line 1345 "parser.c"
+#line 1343 "parser.c"
     break;
 
   case 15: /* fun_declaracao: tipo_especificador ID $@4 LPAREN params RPAREN composto_decl  */
-#line 113 "cminus.y"
+#line 111 "cminus.y"
     { 
         yyval = yyvsp[-6];
         YYSTYPE newNodeS2 = newExpNode(IdK);
@@ -1359,47 +1357,47 @@ yyreduce:
         //$$->child[0] = $4;
         //$$->child[1] = $6;
     }
-#line 1363 "parser.c"
+#line 1361 "parser.c"
     break;
 
   case 16: /* params: param_lista  */
-#line 129 "cminus.y"
+#line 127 "cminus.y"
                 { yyval = yyvsp[0]; }
-#line 1369 "parser.c"
+#line 1367 "parser.c"
     break;
 
   case 17: /* params: VOID  */
-#line 130 "cminus.y"
+#line 128 "cminus.y"
            { yyval = NULL; }
-#line 1375 "parser.c"
+#line 1373 "parser.c"
     break;
 
   case 18: /* param_lista: param_lista COMMA param  */
-#line 135 "cminus.y"
+#line 133 "cminus.y"
     {
         YYSTYPE t = yyvsp[-2];
         while (t->sibling) t = t->sibling;
         t->sibling = yyvsp[0];
         yyval = yyvsp[-2];
     }
-#line 1386 "parser.c"
+#line 1384 "parser.c"
     break;
 
   case 19: /* param_lista: param  */
-#line 141 "cminus.y"
+#line 139 "cminus.y"
             { yyval = yyvsp[0]; }
-#line 1392 "parser.c"
+#line 1390 "parser.c"
     break;
 
   case 20: /* $@5: %empty  */
-#line 145 "cminus.y"
+#line 143 "cminus.y"
                           { savedNameParam = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1399 "parser.c"
+#line 1397 "parser.c"
     break;
 
   case 21: /* param: tipo_especificador ID $@5  */
-#line 147 "cminus.y"
+#line 145 "cminus.y"
     {
         yyval = yyvsp[-2];
         YYSTYPE newNodeS2 = newExpNode(IdK);
@@ -1407,18 +1405,18 @@ yyreduce:
         newNodeS2->lineno = savedLineNo;
         yyvsp[-2]->child[0] = newNodeS2;
     }
-#line 1411 "parser.c"
+#line 1409 "parser.c"
     break;
 
   case 22: /* $@6: %empty  */
-#line 154 "cminus.y"
+#line 152 "cminus.y"
                             { savedNameParam = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1418 "parser.c"
+#line 1416 "parser.c"
     break;
 
   case 23: /* param: tipo_especificador ID $@6 LBRACKET RBRACKET  */
-#line 156 "cminus.y"
+#line 154 "cminus.y"
     {
         yyval = yyvsp[-4];
         YYSTYPE newNodeS2 = newExpNode(IdK);
@@ -1426,247 +1424,231 @@ yyreduce:
         newNodeS2->lineno = savedLineNo;
         yyvsp[-4]->child[0] = newNodeS2;
     }
-#line 1430 "parser.c"
+#line 1428 "parser.c"
     break;
 
   case 24: /* composto_decl: LBRACE local_declaracoes statement_lista RBRACE  */
-#line 167 "cminus.y"
+#line 165 "cminus.y"
         {
-            //fprintf(stdout, "16aq\n");
             if(yyvsp[-2] != NULL){
                 yyval = yyvsp[-2];
                 YYSTYPE t = yyval;
-                //fprintf(stdout, "16.5aq\n");
                 while (t->sibling) t = t->sibling;
                 t->sibling = yyvsp[-1];
-                
-                //fprintf(stdout, "17aq\n");
             }
             else {
-                //fprintf(stdout, "18aq\n");
                 yyval = yyvsp[-1];
-                //fprintf(stdout, "19aq\n");
             }
         }
-#line 1452 "parser.c"
+#line 1444 "parser.c"
     break;
 
   case 25: /* local_declaracoes: local_declaracoes var_declaracao  */
-#line 188 "cminus.y"
+#line 180 "cminus.y"
         {
-            fprintf(stdout, "8aq \n");
             YYSTYPE t = yyvsp[-1];
             if (t != NULL) {
-                fprintf(stdout, "8.1aq \n");
                 while (t->sibling) t = t->sibling;
                 t->sibling = yyvsp[0];
                 yyval = yyvsp[-1];
             } else {
-                fprintf(stdout, "8.2aq \n");
                 yyval = yyvsp[0];
             }
         }
-#line 1470 "parser.c"
+#line 1459 "parser.c"
     break;
 
   case 26: /* local_declaracoes: %empty  */
-#line 202 "cminus.y"
+#line 191 "cminus.y"
         {
-            fprintf(stdout, "9aq ");
             yyval = NULL;
             //$$ = $2;
         }
-#line 1480 "parser.c"
+#line 1468 "parser.c"
     break;
 
   case 27: /* statement_lista: statement_lista statement  */
-#line 211 "cminus.y"
+#line 199 "cminus.y"
         {
-            fprintf(stdout, "11aq ");
             YYSTYPE t = yyvsp[-1];
             if (t != NULL) {
                 while (t->sibling) t = t->sibling;
                 t->sibling = yyvsp[0];
-                fprintf(stdout, "14aq\n");
-
                 yyval = yyvsp[-1];
             } else {
-                fprintf(stdout, "15aq\n");
                 yyval = yyvsp[0];
             }
-            fprintf(stdout, "13aq\n");
         }
-#line 1500 "parser.c"
+#line 1483 "parser.c"
     break;
 
   case 28: /* statement_lista: %empty  */
-#line 227 "cminus.y"
+#line 210 "cminus.y"
         {
-            fprintf(stdout, "12aq ");
             yyval = NULL;
         }
-#line 1509 "parser.c"
+#line 1491 "parser.c"
     break;
 
   case 29: /* statement: expressao_decl  */
-#line 234 "cminus.y"
+#line 216 "cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1517 "parser.c"
+#line 1499 "parser.c"
     break;
 
   case 30: /* statement: composto_decl  */
-#line 237 "cminus.y"
+#line 219 "cminus.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1525 "parser.c"
+#line 1507 "parser.c"
     break;
 
   case 31: /* statement: selecao_decl  */
-#line 240 "cminus.y"
+#line 222 "cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1533 "parser.c"
+#line 1515 "parser.c"
     break;
 
   case 32: /* statement: iteracao_decl  */
-#line 243 "cminus.y"
+#line 225 "cminus.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1541 "parser.c"
+#line 1523 "parser.c"
     break;
 
   case 33: /* statement: retorno_decl  */
-#line 246 "cminus.y"
+#line 228 "cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1549 "parser.c"
+#line 1531 "parser.c"
     break;
 
   case 34: /* expressao_decl: expressao SEMI  */
-#line 253 "cminus.y"
+#line 235 "cminus.y"
         {
             yyval = yyvsp[-1];
         }
-#line 1557 "parser.c"
+#line 1539 "parser.c"
     break;
 
   case 35: /* expressao_decl: SEMI  */
-#line 257 "cminus.y"
+#line 239 "cminus.y"
         {
             yyval = NULL;
         }
-#line 1565 "parser.c"
+#line 1547 "parser.c"
     break;
 
   case 36: /* selecao_decl: IF LPAREN expressao RPAREN statement  */
-#line 264 "cminus.y"
+#line 246 "cminus.y"
         {
             yyval = newStmtNode(IfK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1575 "parser.c"
+#line 1557 "parser.c"
     break;
 
   case 37: /* selecao_decl: IF LPAREN expressao RPAREN statement ELSE statement  */
-#line 270 "cminus.y"
+#line 252 "cminus.y"
         {
             yyval = newStmtNode(IfK);
             yyval->child[0] = yyvsp[-4];
             yyval->child[1] = yyvsp[-2];
             yyval->child[2] = yyvsp[0];
         }
-#line 1586 "parser.c"
+#line 1568 "parser.c"
     break;
 
   case 38: /* iteracao_decl: WHILE LPAREN expressao RPAREN statement  */
-#line 280 "cminus.y"
+#line 262 "cminus.y"
         {
             yyval = newStmtNode(WhileK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1596 "parser.c"
+#line 1578 "parser.c"
     break;
 
   case 39: /* retorno_decl: RETURN SEMI  */
-#line 289 "cminus.y"
+#line 271 "cminus.y"
         {
             yyval = newStmtNode(ReturnK);
         }
-#line 1604 "parser.c"
+#line 1586 "parser.c"
     break;
 
   case 40: /* retorno_decl: RETURN expressao SEMI  */
-#line 293 "cminus.y"
+#line 275 "cminus.y"
         {
             yyval = newStmtNode(ReturnK);
             yyval->child[0] = yyvsp[-1];
         }
-#line 1613 "parser.c"
+#line 1595 "parser.c"
     break;
 
   case 41: /* expressao: var ASSIGN expressao  */
-#line 301 "cminus.y"
+#line 283 "cminus.y"
         {
             yyval = newStmtNode(AssignK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1623 "parser.c"
+#line 1605 "parser.c"
     break;
 
   case 42: /* expressao: simples_expressao  */
-#line 306 "cminus.y"
+#line 288 "cminus.y"
                         {
         yyval = yyvsp[0];
     }
-#line 1631 "parser.c"
+#line 1613 "parser.c"
     break;
 
   case 43: /* $@7: %empty  */
-#line 312 "cminus.y"
+#line 294 "cminus.y"
        { savedNameVar = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1638 "parser.c"
+#line 1620 "parser.c"
     break;
 
   case 44: /* var: ID $@7  */
-#line 314 "cminus.y"
+#line 296 "cminus.y"
         {
             yyval = newExpNode(IdK);
             yyval->attr.name = savedNameVar;
             yyval->lineno = savedLineNo;
         }
-#line 1648 "parser.c"
+#line 1630 "parser.c"
     break;
 
   case 45: /* $@8: %empty  */
-#line 319 "cminus.y"
+#line 301 "cminus.y"
          { savedNameVar2 = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1655 "parser.c"
+#line 1637 "parser.c"
     break;
 
   case 46: /* var: ID $@8 LBRACKET expressao RBRACKET  */
-#line 321 "cminus.y"
+#line 303 "cminus.y"
         {
             yyval = newExpNode(IdK);
             yyval->attr.name = savedNameVar2;
             yyval->lineno = savedLineNo;
             yyval->child[0] = yyvsp[-1];
         }
-#line 1666 "parser.c"
+#line 1648 "parser.c"
     break;
 
   case 47: /* simples_expressao: soma_expressao relacional soma_expressao  */
-#line 331 "cminus.y"
+#line 313 "cminus.y"
         {
             //$$ = newExpNode(OpK);
             //$$->attr.op = $2->attr.op;
@@ -1674,117 +1656,117 @@ yyreduce:
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1678 "parser.c"
+#line 1660 "parser.c"
     break;
 
   case 48: /* simples_expressao: soma_expressao  */
-#line 338 "cminus.y"
+#line 320 "cminus.y"
                      {
         yyval = yyvsp[0];
     }
-#line 1686 "parser.c"
+#line 1668 "parser.c"
     break;
 
   case 49: /* relacional: LET  */
-#line 344 "cminus.y"
+#line 326 "cminus.y"
         { 
         yyval = newExpNode(OpK);
         yyval->attr.op = LET;
         yyval->attr.name = copyString("<=");
         }
-#line 1696 "parser.c"
+#line 1678 "parser.c"
     break;
 
   case 50: /* relacional: LT  */
-#line 349 "cminus.y"
+#line 331 "cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = LT;
         yyval->attr.name = copyString("<");
         }
-#line 1706 "parser.c"
+#line 1688 "parser.c"
     break;
 
   case 51: /* relacional: BT  */
-#line 354 "cminus.y"
+#line 336 "cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = BT;
         yyval->attr.name = copyString(">");
         }
-#line 1716 "parser.c"
+#line 1698 "parser.c"
     break;
 
   case 52: /* relacional: BET  */
-#line 359 "cminus.y"
+#line 341 "cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = BET;
         yyval->attr.name = copyString(">=");
         }
-#line 1726 "parser.c"
+#line 1708 "parser.c"
     break;
 
   case 53: /* relacional: EQUAL  */
-#line 364 "cminus.y"
+#line 346 "cminus.y"
             { 
         yyval = newExpNode(OpK);
         yyval->attr.op = EQUAL;
         yyval->attr.name = copyString("==");
         }
-#line 1736 "parser.c"
+#line 1718 "parser.c"
     break;
 
   case 54: /* relacional: DIF  */
-#line 369 "cminus.y"
+#line 351 "cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = DIF;
         yyval->attr.name = copyString("!=");
         }
-#line 1746 "parser.c"
+#line 1728 "parser.c"
     break;
 
   case 55: /* soma_expressao: soma_expressao soma termo  */
-#line 378 "cminus.y"
+#line 360 "cminus.y"
         {
             yyval = yyvsp[-1];
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1756 "parser.c"
+#line 1738 "parser.c"
     break;
 
   case 56: /* soma_expressao: termo  */
-#line 383 "cminus.y"
+#line 365 "cminus.y"
             {
         yyval = yyvsp[0];
     }
-#line 1764 "parser.c"
+#line 1746 "parser.c"
     break;
 
   case 57: /* soma: PLUS  */
-#line 389 "cminus.y"
+#line 371 "cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = PLUS;
         yyval->attr.name = copyString("+");
         }
-#line 1774 "parser.c"
+#line 1756 "parser.c"
     break;
 
   case 58: /* soma: MINUS  */
-#line 394 "cminus.y"
+#line 376 "cminus.y"
             { 
         yyval = newExpNode(OpK);
         yyval->attr.op = MINUS;
         yyval->attr.name = copyString("-"); 
         }
-#line 1784 "parser.c"
+#line 1766 "parser.c"
     break;
 
   case 59: /* termo: termo mult fator  */
-#line 403 "cminus.y"
+#line 385 "cminus.y"
         {
             //$$ = newExpNode(OpK);
             //$$->attr.op = $2->attr.op;
@@ -1792,87 +1774,87 @@ yyreduce:
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1796 "parser.c"
+#line 1778 "parser.c"
     break;
 
   case 60: /* termo: fator  */
-#line 410 "cminus.y"
+#line 392 "cminus.y"
             {
         yyval = yyvsp[0];
     }
-#line 1804 "parser.c"
+#line 1786 "parser.c"
     break;
 
   case 61: /* mult: TIMES  */
-#line 416 "cminus.y"
+#line 398 "cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = TIMES;
         yyval->attr.name = copyString("*");
         }
-#line 1814 "parser.c"
+#line 1796 "parser.c"
     break;
 
   case 62: /* mult: OVER  */
-#line 421 "cminus.y"
+#line 403 "cminus.y"
            { 
         yyval = newExpNode(OpK);
         yyval->attr.op = OVER; 
         yyval->attr.name = copyString("/");
         }
-#line 1824 "parser.c"
+#line 1806 "parser.c"
     break;
 
   case 63: /* fator: LPAREN expressao RPAREN  */
-#line 429 "cminus.y"
+#line 411 "cminus.y"
                             { 
         yyval = yyvsp[-1];     
     }
-#line 1832 "parser.c"
+#line 1814 "parser.c"
     break;
 
   case 64: /* fator: var  */
-#line 432 "cminus.y"
+#line 414 "cminus.y"
           {
         yyval = yyvsp[0];
     }
-#line 1840 "parser.c"
+#line 1822 "parser.c"
     break;
 
   case 65: /* fator: ativacao  */
-#line 435 "cminus.y"
+#line 417 "cminus.y"
                {
         yyval = yyvsp[0];
     }
-#line 1848 "parser.c"
+#line 1830 "parser.c"
     break;
 
   case 66: /* $@9: %empty  */
-#line 438 "cminus.y"
+#line 420 "cminus.y"
           { savedNameFator = copyString(tokenString);
                    savedLineNo = lineno; }
-#line 1855 "parser.c"
+#line 1837 "parser.c"
     break;
 
   case 67: /* fator: NUM $@9  */
-#line 440 "cminus.y"
+#line 422 "cminus.y"
         {
             yyval = newExpNode(ConstK);
             yyval->attr.val = atoi(savedNameFator);
             yyval->lineno = savedLineNo;
         }
-#line 1865 "parser.c"
+#line 1847 "parser.c"
     break;
 
   case 68: /* $@10: %empty  */
-#line 448 "cminus.y"
+#line 430 "cminus.y"
        { savedNameAtivacao = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1872 "parser.c"
+#line 1854 "parser.c"
     break;
 
   case 69: /* ativacao: ID $@10 LPAREN args RPAREN  */
-#line 450 "cminus.y"
+#line 432 "cminus.y"
         {
             yyval = newExpNode(IdK);
             //$$ = newExpNode(FunK);
@@ -1880,27 +1862,27 @@ yyreduce:
             yyval->lineno = savedLineNo;
             yyval->child[0] = yyvsp[-1];
         }
-#line 1884 "parser.c"
+#line 1866 "parser.c"
     break;
 
   case 70: /* args: arg_lista  */
-#line 460 "cminus.y"
+#line 442 "cminus.y"
               {
         yyval = yyvsp[0];
     }
-#line 1892 "parser.c"
+#line 1874 "parser.c"
     break;
 
   case 71: /* args: %empty  */
-#line 464 "cminus.y"
+#line 446 "cminus.y"
         {
             yyval = NULL;
         }
-#line 1900 "parser.c"
+#line 1882 "parser.c"
     break;
 
   case 72: /* arg_lista: arg_lista COMMA expressao  */
-#line 471 "cminus.y"
+#line 453 "cminus.y"
         {
             YYSTYPE t = yyvsp[-2];
             if (t != NULL) {
@@ -1911,19 +1893,19 @@ yyreduce:
                 yyval = yyvsp[0];
             }
         }
-#line 1915 "parser.c"
+#line 1897 "parser.c"
     break;
 
   case 73: /* arg_lista: expressao  */
-#line 481 "cminus.y"
+#line 463 "cminus.y"
                 {
         yyval = yyvsp[0];
     }
-#line 1923 "parser.c"
+#line 1905 "parser.c"
     break;
 
 
-#line 1927 "parser.c"
+#line 1909 "parser.c"
 
       default: break;
     }
@@ -2116,7 +2098,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 486 "cminus.y"
+#line 468 "cminus.y"
 
 
 int yyerror(char * message)

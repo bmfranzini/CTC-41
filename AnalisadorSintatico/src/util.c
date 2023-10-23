@@ -106,14 +106,11 @@ TreeNode * newDecNode(DecKind kind)
         pce("Out of memory error at line %d\n", lineno);
     else 
     {
-        // pce("noh criado\n");
         for (i = 0; i < MAXCHILDREN; i++) t->child[i] = NULL;
         t->sibling = NULL;
         t->nodekind = DecK;
         t->kind.dec = kind;
         t->lineno = lineno;
-        pce("kind = %d\n", kind);
-        // pce("final do noh\n");
     }
     return t;
 }
@@ -123,7 +120,6 @@ TreeNode * newDecNode(DecKind kind)
  */
 char * copyString(char * s)
 { 
-  // fprintf(stderr,"Entrou no copyString, s = %s\n", s);
   int n;
   char * t;
   if (s==NULL) return NULL;
