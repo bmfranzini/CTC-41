@@ -171,7 +171,13 @@ void printTree(TreeNode *tree)
                     fprintf(listing, "If\n");
                     break;
                 case AssignK:
-                    fprintf(listing, "Assign to: %s\n", tree->attr.name);
+                    fprintf(listing, "Assign:\n");
+                    break;
+                case WhileK:
+                    fprintf(listing, "While\n");
+                    break;
+                case ReturnK:
+                    fprintf(listing, "Return\n");
                     break;
                 default:
                     fprintf(listing, "Unknown StmtNode kind\n");
@@ -183,8 +189,8 @@ void printTree(TreeNode *tree)
             switch (tree->kind.exp) 
             {
                 case OpK:
-                    fprintf(listing, "Op: ");
-                    printToken(tree->attr.op, "\0");
+                    fprintf(listing, "Op: %s\n", tree->attr.name);
+                    // printToken(tree->attr.op, "\0");
                     break;
                 case ConstK:
                     fprintf(listing, "Const: %d\n", tree->attr.val);
@@ -192,6 +198,9 @@ void printTree(TreeNode *tree)
                 case IdK:
                     fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
+                case FunK:
+                    fprintf(listing, "Activation: %s\n", tree->attr.name);
+                    break; 
                 // Adicione aqui outros cases para os tipos ExpKind se necessário
                 default:
                     fprintf(listing, "Unknown ExpNode kind\n");
@@ -215,7 +224,7 @@ void printTree(TreeNode *tree)
                     fprintf(listing, "Parameter: %s\n", tree->attr.name);
                     break;
                 case DeclarationK:
-                    fprintf(listing, "Declaration: %s\n", tree->attr.name);
+                    fprintf(listing, "Type: %s\n", tree->attr.name);
                     break;
                 default:
                     fprintf(listing, "Unknown DecNode kind\n");

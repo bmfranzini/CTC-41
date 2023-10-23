@@ -13,8 +13,14 @@
 #include "parse.h"
 
 #define YYSTYPE TreeNode*
-static char * savedName;
-static char * savedName2; /* for use in assignments */
+static char * savedNameVarDeclaracao;
+static char * savedNameVarDeclaracao2;
+static char * savedNameFunDeclaracao;
+static char * savedNameParam;
+static char * savedNameVar;
+static char * savedNameVar2;
+static char * savedNameFator;
+static char * savedNameAtivacao; /* for use in assignments */
 static int savedLineNo;
 static int savedLineNo2;  /* ditto */
 static TreeNode * savedTree; /* stores syntax tree for later return */
@@ -32,12 +38,13 @@ int yyerror(char *);
 %% /* Grammar for TINY */
 
 programa:
-    declaracao_lista { savedTree = $1; }
+    declaracao_lista {fprintf(stdout, "1aq "); savedTree = $1; }
 ;
 
 declaracao_lista:
     declaracao_lista declaracao 
     { 
+        fprintf(stdout, "20aq\n");
         YYSTYPE t = $1;
         if (t != NULL) {
             while (t->sibling != NULL) t = t->sibling;
@@ -56,40 +63,31 @@ declaracao:
 ;
 
 var_declaracao:
-    tipo_especificador ID { savedName = copyString(lastTokenString);
+    tipo_especificador ID { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; } SEMI
     { 
+        fprintf(stdout, "9.1aq \n");
         $$ = $1;
         YYSTYPE newNodeS2 = newExpNode(IdK);
-        fprintf(stdout, "savedName = %s\n", savedName);
-        newNodeS2->attr.name = savedName;
+        newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
         $1->child[0] = newNodeS2;
     }
-    | tipo_especificador ID { savedName = copyString(lastTokenString);
-                   savedLineNo = lineno; } LBRACKET NUM { savedName2 = copyString(tokenString);
+    | tipo_especificador ID { savedNameVarDeclaracao = copyString(lastTokenString);
+                   savedLineNo = lineno; } LBRACKET NUM { savedNameVarDeclaracao2 = copyString(tokenString);
                    savedLineNo2 = lineno; } RBRACKET SEMI
     { 
         $$ = $1;
         YYSTYPE newNodeS2 = newExpNode(IdK);
-        fprintf(stdout, "savedName = %s\n", savedName);
-        newNodeS2->attr.name = savedName;
+        newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
         $1->child[0] = newNodeS2;
-        fprintf(stdout, "savedName2 = %s\n", savedName2);
 
         YYSTYPE newNodeS3 = newExpNode(ConstK);
-        newNodeS3->attr.val = atoi(savedName2);
+        newNodeS3->attr.val = atoi(savedNameVarDeclaracao2);
         newNodeS3->lineno = savedLineNo2;
         newNodeS2->child[0] = newNodeS3;
 
-        /*antigo
-        $$ = newDecNode(ArrDecK);
-        $1->child[0] = $$; // Linking tipo_especificador node as child
-        $$->attr.name = copyString($2->attr.name); 
-        $$->attr.val = $4->attr.val;
-        $$->type = $1->type;
-        */
     }
 ;
 
@@ -110,13 +108,20 @@ tipo_especificador:
 ;
 
 fun_declaracao:
-    tipo_especificador ID LPAREN params RPAREN composto_decl
+    tipo_especificador ID { savedNameFunDeclaracao = copyString(lastTokenString);
+                  savedLineNo = lineno; } LPAREN params RPAREN composto_decl
     { 
-        $$ = newDecNode(FunDecK);
-        $$->attr.name = copyString($2->attr.name);
-        $$->type = $1->type;
-        $$->child[0] = $4;
-        $$->child[1] = $6;
+        $$ = $1;
+        YYSTYPE newNodeS2 = newExpNode(IdK);
+        newNodeS2->attr.name = savedNameFunDeclaracao;
+        newNodeS2->lineno = savedLineNo;
+        $1->child[0] = newNodeS2;
+        $1->child[0]->child[0] = $5;
+        $1->child[0]->child[1] = $7;
+
+        //$$->type = $1->type;
+        //$$->child[0] = $4;
+        //$$->child[1] = $6;
     }
 ;
 
@@ -127,7 +132,7 @@ params:
 
 param_lista:
     param_lista COMMA param
-    { 
+    {
         YYSTYPE t = $1;
         while (t->sibling) t = t->sibling;
         t->sibling = $3;
@@ -137,71 +142,110 @@ param_lista:
 ;
 
 param:
-    tipo_especificador ID
+    tipo_especificador ID { savedNameParam = copyString(lastTokenString);
+                   savedLineNo = lineno; }
     {
-        $$ = newDecNode(VarDecK); // Adaptacao para o nó de declaracao
-        $$->attr.name = copyString($2->attr.name);
-        $$->type = $1->type;
+        $$ = $1;
+        YYSTYPE newNodeS2 = newExpNode(IdK);
+        newNodeS2->attr.name = savedNameParam;
+        newNodeS2->lineno = savedLineNo;
+        $1->child[0] = newNodeS2;
     }
-    | tipo_especificador ID LBRACKET RBRACKET
+    | tipo_especificador ID { savedNameParam = copyString(lastTokenString);
+                   savedLineNo = lineno; } LBRACKET RBRACKET
     {
-        $$ = newDecNode(ArrDecK); // Adaptacao para o nó de declaracao de array
-        $$->attr.name = copyString($2->attr.name);
-        $$->type = $1->type;
+        $$ = $1;
+        YYSTYPE newNodeS2 = newExpNode(IdK);
+        newNodeS2->attr.name = savedNameParam;
+        newNodeS2->lineno = savedLineNo;
+        $1->child[0] = newNodeS2;
     }
 ;
 
 composto_decl:
     LBRACE local_declaracoes statement_lista RBRACE
         {
-            $$ = newStmtNode(CompoundK);
-            $$->child[0] = $2;
-            $$->child[1] = $3;
+            //fprintf(stdout, "16aq\n");
+            if($2 != NULL){
+                $$ = $2;
+                YYSTYPE t = $$;
+                //fprintf(stdout, "16.5aq\n");
+                while (t->sibling) t = t->sibling;
+                t->sibling = $3;
+                
+                //fprintf(stdout, "17aq\n");
+            }
+            else {
+                //fprintf(stdout, "18aq\n");
+                $$ = $3;
+                //fprintf(stdout, "19aq\n");
+            }
         }
     ;
 
 local_declaracoes:
     local_declaracoes var_declaracao
         {
+            fprintf(stdout, "8aq \n");
             YYSTYPE t = $1;
             if (t != NULL) {
+                fprintf(stdout, "8.1aq \n");
                 while (t->sibling) t = t->sibling;
                 t->sibling = $2;
                 $$ = $1;
             } else {
+                fprintf(stdout, "8.2aq \n");
                 $$ = $2;
             }
         }
     | /* vazio */
         {
+            fprintf(stdout, "9aq ");
             $$ = NULL;
+            //$$ = $2;
         }
     ;
 
 statement_lista:
     statement_lista statement
         {
+            fprintf(stdout, "11aq ");
             YYSTYPE t = $1;
             if (t != NULL) {
                 while (t->sibling) t = t->sibling;
                 t->sibling = $2;
+                fprintf(stdout, "14aq\n");
+
                 $$ = $1;
             } else {
+                fprintf(stdout, "15aq\n");
                 $$ = $2;
             }
+            fprintf(stdout, "13aq\n");
         }
     | /* vazio */
         {
+            fprintf(stdout, "12aq ");
             $$ = NULL;
         }
     ;
 
 statement:
-    expressao_decl
-    | composto_decl
-    | selecao_decl
-    | iteracao_decl
-    | retorno_decl
+    expressao_decl {
+            $$ = $1;
+        }
+    | composto_decl {
+            $$ = $1;
+        }
+    | selecao_decl {
+            $$ = $1;
+        }
+    | iteracao_decl {
+            $$ = $1;
+        }
+    | retorno_decl {
+            $$ = $1;
+        }
     ;
 
 expressao_decl:
@@ -259,97 +303,163 @@ expressao:
             $$->child[0] = $1;
             $$->child[1] = $3;
         }
-    | simples_expressao
+    | simples_expressao {
+        $$ = $1;
+    }
     ;
 
 var:
-    ID
+    ID { savedNameVar = copyString(lastTokenString);
+                   savedLineNo = lineno; }
         {
             $$ = newExpNode(IdK);
-            $$->attr.name = copyString($1->attr.name);
+            $$->attr.name = savedNameVar;
+            $$->lineno = savedLineNo;
         }
-    | ID LBRACKET expressao RBRACKET
+    | ID { savedNameVar2 = copyString(lastTokenString);
+                   savedLineNo = lineno; } LBRACKET expressao RBRACKET
         {
-            $$ = newExpNode(ArrK);
-            $$->attr.name = copyString($1->attr.name);
-            $$->child[0] = $3;
+            $$ = newExpNode(IdK);
+            $$->attr.name = savedNameVar2;
+            $$->lineno = savedLineNo;
+            $$->child[0] = $4;
         }
     ;
 
 simples_expressao:
     soma_expressao relacional soma_expressao
         {
-            $$ = newExpNode(OpK);
-            $$->attr.op = $2->attr.op;
+            //$$ = newExpNode(OpK);
+            //$$->attr.op = $2->attr.op;
+            $$ = $2;
             $$->child[0] = $1;
             $$->child[1] = $3;
         }
-    | soma_expressao
+    | soma_expressao {
+        $$ = $1;
+    }
     ;
 
 relacional:
-    LET { $$->attr.op = LET; }
-    | LT { $$->attr.op = LT; }
-    | BT { $$->attr.op = BT; }
-    | BET { $$->attr.op = BET; }
-    | EQUAL { $$->attr.op = EQUAL; }
-    | DIF { $$->attr.op = DIF; }
+    LET { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = LET;
+        $$->attr.name = copyString("<=");
+        }
+    | LT { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = LT;
+        $$->attr.name = copyString("<");
+        }
+    | BT { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = BT;
+        $$->attr.name = copyString(">");
+        }
+    | BET { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = BET;
+        $$->attr.name = copyString(">=");
+        }
+    | EQUAL { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = EQUAL;
+        $$->attr.name = copyString("==");
+        }
+    | DIF { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = DIF;
+        $$->attr.name = copyString("!=");
+        }
     ;
 
 soma_expressao:
     soma_expressao soma termo
         {
-            $$ = newExpNode(OpK);
-            $$->attr.op = $2->attr.op;
+            $$ = $2;
             $$->child[0] = $1;
             $$->child[1] = $3;
         }
-    | termo
+    | termo {
+        $$ = $1;
+    }
     ;
 
 soma:
-    PLUS { $$->attr.op = PLUS; }
-    | MINUS { $$->attr.op = MINUS; }
+    PLUS { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = PLUS;
+        $$->attr.name = copyString("+");
+        }
+    | MINUS { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = MINUS;
+        $$->attr.name = copyString("-"); 
+        }
     ;
 
 termo:
     termo mult fator
         {
-            $$ = newExpNode(OpK);
-            $$->attr.op = $2->attr.op;
+            //$$ = newExpNode(OpK);
+            //$$->attr.op = $2->attr.op;
+            $$ = $2;
             $$->child[0] = $1;
             $$->child[1] = $3;
         }
-    | fator
+    | fator {
+        $$ = $1;
+    }
     ;
 
 mult:
-    TIMES { $$->attr.op = TIMES; }
-    | OVER { $$->attr.op = OVER; }
+    TIMES { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = TIMES;
+        $$->attr.name = copyString("*");
+        }
+    | OVER { 
+        $$ = newExpNode(OpK);
+        $$->attr.op = OVER; 
+        $$->attr.name = copyString("/");
+        }
     ;
 
 fator:
-    LPAREN expressao RPAREN { $$ = $2; }
-    | var
-    | ativacao
-    | NUM
+    LPAREN expressao RPAREN { 
+        $$ = $2;     
+    }
+    | var {
+        $$ = $1;
+    }
+    | ativacao {
+        $$ = $1;
+    }
+    | NUM { savedNameFator = copyString(tokenString);
+                   savedLineNo = lineno; }
         {
             $$ = newExpNode(ConstK);
-            $$->attr.val = $1->attr.val;
+            $$->attr.val = atoi(savedNameFator);
+            $$->lineno = savedLineNo;
         }
     ;
 
 ativacao:
-    ID LPAREN args RPAREN
+    ID { savedNameAtivacao = copyString(lastTokenString);
+                   savedLineNo = lineno; } LPAREN args RPAREN
         {
-            $$ = newExpNode(CallK);
-            $$->attr.name = copyString($1->attr.name);
-            $$->child[0] = $3;
+            $$ = newExpNode(IdK);
+            //$$ = newExpNode(FunK);
+            $$->attr.name = savedNameAtivacao;
+            $$->lineno = savedLineNo;
+            $$->child[0] = $4;
         }
     ;
 
 args:
-    arg_lista
+    arg_lista {
+        $$ = $1;
+    }
     | /* vazio */
         {
             $$ = NULL;
@@ -368,7 +478,9 @@ arg_lista:
                 $$ = $3;
             }
         }
-    | expressao
+    | expressao {
+        $$ = $1;
+    }
     ;
 
 %%
