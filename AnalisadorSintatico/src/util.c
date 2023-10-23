@@ -240,3 +240,27 @@ void printTree(TreeNode *tree)
     UNINDENT;
 }
 
+void initStack() {
+    stack.top = -1;
+}
+
+int isFull() {
+    return stack.top == 10 - 1;
+}
+
+int isEmpty() {
+    return stack.top == -1;
+}
+
+void push(char *item) {
+    if (!isFull()) {
+        stack.items[++stack.top] = item;
+    }
+}
+
+char* pop() {
+    if (!isEmpty()) {
+        return stack.items[stack.top--];
+    }
+    return NULL;
+}

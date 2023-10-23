@@ -37,7 +37,7 @@ whitespace  [ \t]+
 "void"          {return VOID;}
 "while"         {return WHILE;}
 "+"             {return PLUS;}
-"-"|"–"         {return MINUS;}
+"-"             {return MINUS;}
 "*"             {return TIMES;}
 "/"             {return OVER;}
 "<"             {return LT;}

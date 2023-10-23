@@ -12,6 +12,7 @@
 #include "scan.h"
 #include "parse.h"
 
+
 #define YYSTYPE TreeNode*
 static char * savedNameVarDeclaracao;
 static char * savedNameVarDeclaracao2;
@@ -25,8 +26,8 @@ static int savedLineNo;
 static int savedLineNo2;  /* ditto */
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
+Stack stack;
 int yyerror(char *);
-
 %}
 
 %token 
@@ -427,12 +428,12 @@ fator:
     ;
 
 ativacao:
-    ID { savedNameAtivacao = copyString(lastTokenString);
+    ID { push(copyString(lastTokenString));
                    savedLineNo = lineno; } LPAREN args RPAREN
         {
-            $$ = newExpNode(IdK);
-            //$$ = newExpNode(FunK);
-            $$->attr.name = savedNameAtivacao;
+            //$$ = newExpNode(IdK);
+            $$ = newExpNode(FunK);
+            $$->attr.name = pop();
             $$->lineno = savedLineNo;
             $$->child[0] = $4;
         }

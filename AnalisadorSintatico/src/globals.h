@@ -52,6 +52,13 @@ typedef int TokenType;
 //     ASSIGN, SEMI, COMMA, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, NUM, ID
 //    } TokenType;
 
+typedef struct {
+    int top;
+    char *items[100];
+} Stack;
+
+extern Stack stack;
+
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */

@@ -46,6 +46,7 @@ extern int line_count;
 //extern char lines[50][50];
 extern char *lines[100]; // Matriz de ponteiros para linhas
 
+
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/

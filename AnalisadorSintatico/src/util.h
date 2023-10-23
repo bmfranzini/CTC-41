@@ -34,4 +34,15 @@ char * copyString( char * );
  */
 void printTree( TreeNode * );
 
+
+void initStack();
+
+int isFull();
+
+int isEmpty();
+
+void push(char *);
+
+char* pop();
+
 #endif

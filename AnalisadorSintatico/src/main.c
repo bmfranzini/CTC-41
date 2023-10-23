@@ -49,9 +49,15 @@ int Error = FALSE;
 int main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
   char pgm[120]; /* source code file name */
-  if (argc != 2)
-    { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
-      exit(1);
+   if (argc != 3)
+    {
+        fprintf(stderr,"usage: %s <filename>\n",argv[0]);
+        fprintf(stderr,"You provided the following arguments:\n");
+        for (int i = 0; i < argc; i++)
+        {
+            fprintf(stderr,"argv[%d]: %s\n", i, argv[i]);
+        }
+        exit(1);
     }
   strcpy(pgm,argv[1]) ;
   if (strchr (pgm, '.') == NULL)
@@ -102,12 +108,13 @@ int main( int argc, char * argv[] )
   }
   listing = stdout; /* send listing to screen */
   fprintf(listing,"\nC- COMPILATION: %s\n",pgm);
-
   
 
 #if NO_PARSE
   while (getToken()!=ENDFILE);
 #else
+  initStack();
+  fprintf(listing,"\nStart parse():\n");
   syntaxTree = parse();
   if (TraceParse) {
     fprintf(listing,"\nSyntax tree:\n");

@@ -1,0 +1,15 @@
+30a31,44
+> 
+> Building Symbol Table...
+> Semantic error at line 4: 'a' was already declared as a variable
+> 
+> Symbol table:
+> 
+> Variable Name  Scope     ID Type  Data Type  Line Numbers             
+> -------------  --------  -------  ---------  -------------------------
+> main                     fun      void        1 
+> input                    fun      int        
+> a              main      var      int         3 
+> output                   fun      void       
+> 
+> Checking for main...
