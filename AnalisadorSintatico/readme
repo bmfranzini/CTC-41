@@ -11,3 +11,6 @@ chmod +x ../scripts/runlex
 chmod +x ../scripts/rundiff
 
  ../build/mylex ../example/missing_key.cm
+
+
+ Mudar a main pro próximo lab pra possibilitar rodar o ddiff (por causa da nova forma de lidar com os args)
