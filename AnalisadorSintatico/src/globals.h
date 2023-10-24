@@ -74,11 +74,11 @@ extern char *lines[100]; // Matriz de ponteiros para linhas
 /**************************************************/
 
 typedef enum {StmtK, ExpK, DecK} NodeKind; // Adding DecK for Declarations
-typedef enum {IfK, WhileK, AssignK, ReturnK, CallK, CompoundK} StmtKind; // Adjusted kinds
+typedef enum {IfK, WhileK, AssignK, ReturnK} StmtKind; // Adjusted kinds
 typedef enum {OpK, ConstK, IdK, VarK, ArrK, FunK} ExpKind; // Expanded expression kinds
 typedef enum {DeclarationK, VarDecK, FunDecK, ParamK, ArrDecK} DecKind; // Added declaration kinds
 
-typedef enum {Void, Integer} ExpType; // Removed Boolean
+typedef enum {Void, Integer} ExpType;
 
 #define MAXCHILDREN 3
 
@@ -91,15 +91,14 @@ typedef struct treeNode
     union { 
         StmtKind stmt; 
         ExpKind exp; 
-        DecKind dec;   // Adicionando DecKind ao kind
+        DecKind dec;
     } kind;
     union { 
         TokenType op;
         int val;
         char *name;
-        // Aqui você pode adicionar mais campos, se declarações tiverem atributos adicionais
     } attr;
-    ExpType type; /* for type checking of exps */
+    ExpType type;
 } TreeNode;
 /**************************************************/
 /***********   Flags for tracing       ************/

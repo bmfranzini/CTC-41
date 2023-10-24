@@ -58,12 +58,6 @@ static void insertNode(TreeNode * t)
                     else
                         st_insert(t->attr.name, t->lineno, 0);
                     break;
-
-                // Remove o case ReadK, pois C- pode não tê-lo.
-                // case ReadK:
-                //     ...
-
-                // Adicione casos adicionais se C- tiver outras instruções que requerem inserção na tabela de símbolos.
                 
                 default:
                     break;
@@ -81,19 +75,16 @@ static void insertNode(TreeNode * t)
                     else
                         st_insert(t->attr.name, t->lineno, 0);
                     break;
-
-                // Adicione lógica para outros tipos de expressões, se necessário.
-
                 default:
                     break;
             }
             break;
-        case DecK:  // Presumindo que DecK seja uma enum para declarações no C-
+        case DecK: 
             switch (t->kind.dec)
             {
-                case FunK:    // Para funções.
-                case VarDecK: // Para declarações de variáveis.
-                case ArrDecK: // Para declarações de arrays.
+                case FunK:
+                case VarDecK:
+                case ArrDecK:
                     if (st_lookup(t->attr.name) == -1)
                         st_insert(t->attr.name, t->lineno, location++);
                     else
@@ -139,7 +130,7 @@ static void checkNode(TreeNode * t)
                 case OpK:
                     if ((t->child[0]->type != Integer) || (t->child[1]->type != Integer))
                         typeError(t, "Op applied to non-integer");
-                    t->type = Integer; // Assumindo que todas as operações retornam inteiros.
+                    t->type = Integer;
                     break;
 
                 case ConstK:
@@ -148,16 +139,14 @@ static void checkNode(TreeNode * t)
 
                 case IdK:
                 case VarK:
-                    t->type = Integer; // Se as variáveis e identificadores forem sempre inteiros em C-
+                    t->type = Integer;
                     break;
 
                 case ArrK:
-                    t->type = Integer; // Arrays em C- devem ser do tipo inteiro.
+                    t->type = Integer;
                     break;
 
                 case FunK:
-                    // Como as funções em C- podem ter tipo Void ou Integer, 
-                    // pode ser necessário realizar verificações adicionais aqui para determinar o tipo.
                     break;
 
                 default:
@@ -170,7 +159,7 @@ static void checkNode(TreeNode * t)
             {
                 case IfK:
                 case WhileK:
-                    if (t->child[0]->type != Integer)  // Considerando que em C- as condições são inteiros.
+                    if (t->child[0]->type != Integer)
                         typeError(t->child[0], "Conditional test is not Integer");
                     break;
 
@@ -180,12 +169,7 @@ static void checkNode(TreeNode * t)
                     break;
 
                 case ReturnK:
-                    // Pode ser necessário adicionar verificações adicionais para as instruções de retorno,
-                    // dependendo de como as funções são definidas em C-.
-                    break;
 
-                case CallK:
-                    // Pode ser necessário adicionar verificações para chamadas de função.
                     break;
 
                 default:
@@ -199,16 +183,14 @@ static void checkNode(TreeNode * t)
                 case DeclarationK:
                 case VarDecK:
                 case ArrDecK:
-                    t->type = Integer; // Supondo que todas as declarações sejam de inteiros.
+                    t->type = Integer;
                     break;
 
                 case FunDecK:
-                    // O tipo da função dependerá de sua declaração em C-.
-                    // Pode ser Integer ou Void.
                     break;
 
                 case ParamK:
-                    t->type = Integer; // Supondo que todos os parâmetros sejam inteiros.
+                    t->type = Integer;
                     break;
 
                 default:
