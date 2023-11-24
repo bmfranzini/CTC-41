@@ -1,19 +1,12 @@
-24a25,42
-> 
-> Building Symbol Table...
-> 
-> Symbol table:
-> 
-> Variable Name  Scope     ID Type  Data Type  Line Numbers             
-> -------------  --------  -------  ---------  -------------------------
-> main                     fun      void        1 
+32a33
 > input                    fun      int        
-> a              main      var      void        3 
+33a35,37
 > output                   fun      void       
 > 
 > Checking for main...
-> 
-> Checking types...
+35a40
 > Semantic error at line 3: variable declared void
-> 
+37c42
+< Type Checking Finished
+---
 > Semantic analysis finished

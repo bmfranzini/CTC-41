@@ -56,4 +56,5 @@ CMakeFiles/mylex.dir/src/main.c.o: \
  /home/rodrigo/CTC-41/AnalisadorSintatico/lib/log.h \
  /home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.h \
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/util.h \
- /home/rodrigo/CTC-41/AnalisadorSintatico/src/parse.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/src/parse.h \
+ /home/rodrigo/CTC-41/AnalisadorSintatico/src/analyze.h

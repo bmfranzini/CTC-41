@@ -37,3 +37,17 @@ Syntax tree:
       Assign:
         Id: b
         Id: a
+
+Building Symbol Table...
+
+Symbol table:
+
+Variable Name  Scope     ID Type  Data Type  Line Numbers 
+-------------  --------  -------  ---------  -------------------------
+a              exemplo   var      int           3    4 
+b              exemplo   var      void          4 
+exemplo                  fun      void          1 
+
+Checking types...
+
+Type Checking Finished

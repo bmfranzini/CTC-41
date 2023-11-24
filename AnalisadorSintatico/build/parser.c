@@ -88,12 +88,14 @@ static char * savedNameFator;
 static char * savedNameAtivacao; /* for use in assignments */
 static int savedLineNo;
 static int savedLineNo2;  /* ditto */
+static int savedLineNo3; 
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
-Stack stack;
+StackInt stackLineno;
+StackChar stackSavedString;
 int yyerror(char *);
 
-#line 97 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 99 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -580,14 +582,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    42,    42,    46,    57,    61,    62,    66,    66,    75,
-      76,    75,    95,   101,   110,   110,   128,   129,   133,   140,
-     144,   144,   153,   153,   165,   180,   192,   199,   211,   217,
-     220,   223,   226,   229,   235,   239,   246,   252,   262,   271,
-     275,   283,   289,   295,   295,   302,   302,   313,   321,   327,
-     332,   337,   342,   347,   352,   360,   366,   372,   377,   385,
-     393,   399,   404,   412,   415,   418,   421,   421,   431,   431,
-     443,   447,   453,   464
+       0,    44,    44,    48,    59,    63,    64,    68,    68,    79,
+      80,    79,   102,   108,   117,   117,   136,   137,   141,   148,
+     152,   152,   162,   162,   175,   190,   202,   209,   221,   227,
+     230,   233,   236,   239,   245,   249,   256,   262,   272,   281,
+     285,   293,   299,   305,   305,   312,   312,   323,   331,   337,
+     342,   347,   352,   357,   362,   370,   376,   382,   387,   395,
+     403,   409,   414,   422,   425,   428,   431,   431,   441,   441,
+     453,   457,   463,   474
 };
 #endif
 
@@ -1227,13 +1229,13 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* programa: declaracao_lista  */
-#line 42 "src/cminus.y"
+#line 44 "src/cminus.y"
                      { savedTree = yyvsp[0]; }
-#line 1233 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1235 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 3: /* declaracao_lista: declaracao_lista declaracao  */
-#line 47 "src/cminus.y"
+#line 49 "src/cminus.y"
     { 
         YYSTYPE t = yyvsp[-1];
         if (t != NULL) {
@@ -1244,112 +1246,118 @@ yyreduce:
             yyval = yyvsp[0];
         }
     }
-#line 1248 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1250 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 4: /* declaracao_lista: declaracao  */
-#line 57 "src/cminus.y"
+#line 59 "src/cminus.y"
                  { yyval = yyvsp[0]; }
-#line 1254 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1256 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 5: /* declaracao: var_declaracao  */
-#line 61 "src/cminus.y"
+#line 63 "src/cminus.y"
                    { yyval = yyvsp[0]; }
-#line 1260 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1262 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 6: /* declaracao: fun_declaracao  */
-#line 62 "src/cminus.y"
+#line 64 "src/cminus.y"
                      { yyval = yyvsp[0]; }
-#line 1266 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1268 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 7: /* $@1: %empty  */
-#line 66 "src/cminus.y"
+#line 68 "src/cminus.y"
                           { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1273 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1275 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 8: /* var_declaracao: tipo_especificador ID $@1 SEMI  */
-#line 68 "src/cminus.y"
+#line 70 "src/cminus.y"
     { 
         yyval = yyvsp[-3];
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        //YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(VarDecK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = yyvsp[-3]->type;
         yyvsp[-3]->child[0] = newNodeS2;
     }
-#line 1285 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1289 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 9: /* $@2: %empty  */
-#line 75 "src/cminus.y"
+#line 79 "src/cminus.y"
                             { savedNameVarDeclaracao = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1292 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1296 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 10: /* $@3: %empty  */
-#line 76 "src/cminus.y"
+#line 80 "src/cminus.y"
                                                         { savedNameVarDeclaracao2 = copyString(tokenString);
                    savedLineNo2 = lineno; }
-#line 1299 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1303 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 11: /* var_declaracao: tipo_especificador ID $@2 LBRACKET NUM $@3 RBRACKET SEMI  */
-#line 78 "src/cminus.y"
+#line 82 "src/cminus.y"
     { 
         yyval = yyvsp[-7];
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        //YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(ArrDecK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = yyvsp[-7]->type;
         yyvsp[-7]->child[0] = newNodeS2;
 
         YYSTYPE newNodeS3 = newExpNode(ConstK);
         newNodeS3->attr.val = atoi(savedNameVarDeclaracao2);
         newNodeS3->lineno = savedLineNo2;
+        newNodeS3->type = newNodeS2->type;
         newNodeS2->child[0] = newNodeS3;
 
     }
-#line 1317 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1324 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 12: /* tipo_especificador: INT  */
-#line 96 "src/cminus.y"
+#line 103 "src/cminus.y"
     { 
         yyval = newDecNode(DeclarationK); 
         yyval->type = Integer;
         yyval->attr.name = copyString("int");
     }
-#line 1327 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1334 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 13: /* tipo_especificador: VOID  */
-#line 102 "src/cminus.y"
+#line 109 "src/cminus.y"
     { 
         yyval = newDecNode(DeclarationK); 
         yyval->type = Void;
         yyval->attr.name = copyString("void");
     }
-#line 1337 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
-    break;
-
-  case 14: /* $@4: %empty  */
-#line 110 "src/cminus.y"
-                          { savedNameFunDeclaracao = copyString(lastTokenString);
-                  savedLineNo = lineno; }
 #line 1344 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
+  case 14: /* $@4: %empty  */
+#line 117 "src/cminus.y"
+                          { pushInt(lineno); savedNameFunDeclaracao = copyString(lastTokenString);
+             }
+#line 1351 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+    break;
+
   case 15: /* fun_declaracao: tipo_especificador ID $@4 LPAREN params RPAREN composto_decl  */
-#line 112 "src/cminus.y"
+#line 119 "src/cminus.y"
     { 
         yyval = yyvsp[-6];
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(FunDecK);
         newNodeS2->attr.name = savedNameFunDeclaracao;
-        newNodeS2->lineno = savedLineNo;
+        newNodeS2->lineno = popInt();
+        newNodeS2->type = yyvsp[-6]->type;
         yyvsp[-6]->child[0] = newNodeS2;
         yyvsp[-6]->child[0]->child[0] = yyvsp[-2];
         yyvsp[-6]->child[0]->child[1] = yyvsp[0];
@@ -1358,78 +1366,80 @@ yyreduce:
         //$$->child[0] = $4;
         //$$->child[1] = $6;
     }
-#line 1362 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1370 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 16: /* params: param_lista  */
-#line 128 "src/cminus.y"
+#line 136 "src/cminus.y"
                 { yyval = yyvsp[0]; }
-#line 1368 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1376 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 17: /* params: VOID  */
-#line 129 "src/cminus.y"
+#line 137 "src/cminus.y"
            { yyval = NULL; }
-#line 1374 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1382 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 18: /* param_lista: param_lista COMMA param  */
-#line 134 "src/cminus.y"
+#line 142 "src/cminus.y"
     {
         YYSTYPE t = yyvsp[-2];
         while (t->sibling) t = t->sibling;
         t->sibling = yyvsp[0];
         yyval = yyvsp[-2];
     }
-#line 1385 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1393 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 19: /* param_lista: param  */
-#line 140 "src/cminus.y"
+#line 148 "src/cminus.y"
             { yyval = yyvsp[0]; }
-#line 1391 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1399 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 20: /* $@5: %empty  */
-#line 144 "src/cminus.y"
+#line 152 "src/cminus.y"
                           { savedNameParam = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1398 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1406 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 21: /* param: tipo_especificador ID $@5  */
-#line 146 "src/cminus.y"
+#line 154 "src/cminus.y"
     {
         yyval = yyvsp[-2];
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newExpNode(VarK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = yyvsp[-2]->type;
         yyvsp[-2]->child[0] = newNodeS2;
     }
-#line 1410 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1419 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 22: /* $@6: %empty  */
-#line 153 "src/cminus.y"
+#line 162 "src/cminus.y"
                             { savedNameParam = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1417 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1426 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 23: /* param: tipo_especificador ID $@6 LBRACKET RBRACKET  */
-#line 155 "src/cminus.y"
+#line 164 "src/cminus.y"
     {
         yyval = yyvsp[-4];
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newExpNode(VarK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = yyvsp[-4]->type;
         yyvsp[-4]->child[0] = newNodeS2;
     }
-#line 1429 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1439 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 24: /* composto_decl: LBRACE local_declaracoes statement_lista RBRACE  */
-#line 166 "src/cminus.y"
+#line 176 "src/cminus.y"
         {
             if(yyvsp[-2] != NULL){
                 yyval = yyvsp[-2];
@@ -1441,11 +1451,11 @@ yyreduce:
                 yyval = yyvsp[-1];
             }
         }
-#line 1445 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1455 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 25: /* local_declaracoes: local_declaracoes var_declaracao  */
-#line 181 "src/cminus.y"
+#line 191 "src/cminus.y"
         {
             YYSTYPE t = yyvsp[-1];
             if (t != NULL) {
@@ -1456,20 +1466,20 @@ yyreduce:
                 yyval = yyvsp[0];
             }
         }
-#line 1460 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1470 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 26: /* local_declaracoes: %empty  */
-#line 192 "src/cminus.y"
+#line 202 "src/cminus.y"
         {
             yyval = NULL;
             //$$ = $2;
         }
-#line 1469 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1479 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 27: /* statement_lista: statement_lista statement  */
-#line 200 "src/cminus.y"
+#line 210 "src/cminus.y"
         {
             YYSTYPE t = yyvsp[-1];
             if (t != NULL) {
@@ -1480,176 +1490,176 @@ yyreduce:
                 yyval = yyvsp[0];
             }
         }
-#line 1484 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1494 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 28: /* statement_lista: %empty  */
-#line 211 "src/cminus.y"
+#line 221 "src/cminus.y"
         {
             yyval = NULL;
         }
-#line 1492 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1502 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 29: /* statement: expressao_decl  */
-#line 217 "src/cminus.y"
+#line 227 "src/cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1500 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1510 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 30: /* statement: composto_decl  */
-#line 220 "src/cminus.y"
+#line 230 "src/cminus.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1508 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1518 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 31: /* statement: selecao_decl  */
-#line 223 "src/cminus.y"
+#line 233 "src/cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1516 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1526 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 32: /* statement: iteracao_decl  */
-#line 226 "src/cminus.y"
+#line 236 "src/cminus.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1524 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1534 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 33: /* statement: retorno_decl  */
-#line 229 "src/cminus.y"
+#line 239 "src/cminus.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1532 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1542 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 34: /* expressao_decl: expressao SEMI  */
-#line 236 "src/cminus.y"
+#line 246 "src/cminus.y"
         {
             yyval = yyvsp[-1];
         }
-#line 1540 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1550 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 35: /* expressao_decl: SEMI  */
-#line 240 "src/cminus.y"
+#line 250 "src/cminus.y"
         {
             yyval = NULL;
         }
-#line 1548 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1558 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 36: /* selecao_decl: IF LPAREN expressao RPAREN statement  */
-#line 247 "src/cminus.y"
+#line 257 "src/cminus.y"
         {
             yyval = newStmtNode(IfK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1558 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1568 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 37: /* selecao_decl: IF LPAREN expressao RPAREN statement ELSE statement  */
-#line 253 "src/cminus.y"
+#line 263 "src/cminus.y"
         {
             yyval = newStmtNode(IfK);
             yyval->child[0] = yyvsp[-4];
             yyval->child[1] = yyvsp[-2];
             yyval->child[2] = yyvsp[0];
         }
-#line 1569 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1579 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 38: /* iteracao_decl: WHILE LPAREN expressao RPAREN statement  */
-#line 263 "src/cminus.y"
+#line 273 "src/cminus.y"
         {
             yyval = newStmtNode(WhileK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1579 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1589 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 39: /* retorno_decl: RETURN SEMI  */
-#line 272 "src/cminus.y"
+#line 282 "src/cminus.y"
         {
             yyval = newStmtNode(ReturnK);
         }
-#line 1587 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1597 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 40: /* retorno_decl: RETURN expressao SEMI  */
-#line 276 "src/cminus.y"
+#line 286 "src/cminus.y"
         {
             yyval = newStmtNode(ReturnK);
             yyval->child[0] = yyvsp[-1];
         }
-#line 1596 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1606 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 41: /* expressao: var ASSIGN expressao  */
-#line 284 "src/cminus.y"
+#line 294 "src/cminus.y"
         {
             yyval = newStmtNode(AssignK);
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1606 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1616 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 42: /* expressao: simples_expressao  */
-#line 289 "src/cminus.y"
+#line 299 "src/cminus.y"
                         {
         yyval = yyvsp[0];
     }
-#line 1614 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1624 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 43: /* $@7: %empty  */
-#line 295 "src/cminus.y"
+#line 305 "src/cminus.y"
        { savedNameVar = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1621 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
-    break;
-
-  case 44: /* var: ID $@7  */
-#line 297 "src/cminus.y"
-        {
-            yyval = newExpNode(IdK);
-            yyval->attr.name = savedNameVar;
-            yyval->lineno = savedLineNo;
-        }
 #line 1631 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
+  case 44: /* var: ID $@7  */
+#line 307 "src/cminus.y"
+        {
+            yyval = newExpNode(VarK);
+            yyval->attr.name = savedNameVar;
+            yyval->lineno = savedLineNo;
+        }
+#line 1641 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+    break;
+
   case 45: /* $@8: %empty  */
-#line 302 "src/cminus.y"
+#line 312 "src/cminus.y"
          { savedNameVar2 = copyString(lastTokenString);
                    savedLineNo = lineno; }
-#line 1638 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1648 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 46: /* var: ID $@8 LBRACKET expressao RBRACKET  */
-#line 304 "src/cminus.y"
+#line 314 "src/cminus.y"
         {
-            yyval = newExpNode(IdK);
+            yyval = newExpNode(VarK);
             yyval->attr.name = savedNameVar2;
             yyval->lineno = savedLineNo;
             yyval->child[0] = yyvsp[-1];
         }
-#line 1649 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1659 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 47: /* simples_expressao: soma_expressao relacional soma_expressao  */
-#line 314 "src/cminus.y"
+#line 324 "src/cminus.y"
         {
             //$$ = newExpNode(OpK);
             //$$->attr.op = $2->attr.op;
@@ -1657,117 +1667,117 @@ yyreduce:
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1661 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1671 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 48: /* simples_expressao: soma_expressao  */
-#line 321 "src/cminus.y"
+#line 331 "src/cminus.y"
                      {
         yyval = yyvsp[0];
     }
-#line 1669 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1679 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 49: /* relacional: LET  */
-#line 327 "src/cminus.y"
+#line 337 "src/cminus.y"
         { 
         yyval = newExpNode(OpK);
         yyval->attr.op = LET;
         yyval->attr.name = copyString("<=");
         }
-#line 1679 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1689 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 50: /* relacional: LT  */
-#line 332 "src/cminus.y"
+#line 342 "src/cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = LT;
         yyval->attr.name = copyString("<");
         }
-#line 1689 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1699 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 51: /* relacional: BT  */
-#line 337 "src/cminus.y"
+#line 347 "src/cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = BT;
         yyval->attr.name = copyString(">");
         }
-#line 1699 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1709 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 52: /* relacional: BET  */
-#line 342 "src/cminus.y"
+#line 352 "src/cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = BET;
         yyval->attr.name = copyString(">=");
         }
-#line 1709 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1719 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 53: /* relacional: EQUAL  */
-#line 347 "src/cminus.y"
+#line 357 "src/cminus.y"
             { 
         yyval = newExpNode(OpK);
         yyval->attr.op = EQUAL;
         yyval->attr.name = copyString("==");
         }
-#line 1719 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1729 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 54: /* relacional: DIF  */
-#line 352 "src/cminus.y"
+#line 362 "src/cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = DIF;
         yyval->attr.name = copyString("!=");
         }
-#line 1729 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1739 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 55: /* soma_expressao: soma_expressao soma termo  */
-#line 361 "src/cminus.y"
+#line 371 "src/cminus.y"
         {
             yyval = yyvsp[-1];
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1739 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1749 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 56: /* soma_expressao: termo  */
-#line 366 "src/cminus.y"
+#line 376 "src/cminus.y"
             {
         yyval = yyvsp[0];
     }
-#line 1747 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1757 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 57: /* soma: PLUS  */
-#line 372 "src/cminus.y"
+#line 382 "src/cminus.y"
          { 
         yyval = newExpNode(OpK);
         yyval->attr.op = PLUS;
         yyval->attr.name = copyString("+");
         }
-#line 1757 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1767 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 58: /* soma: MINUS  */
-#line 377 "src/cminus.y"
+#line 387 "src/cminus.y"
             { 
         yyval = newExpNode(OpK);
         yyval->attr.op = MINUS;
         yyval->attr.name = copyString("-"); 
         }
-#line 1767 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1777 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 59: /* termo: termo mult fator  */
-#line 386 "src/cminus.y"
+#line 396 "src/cminus.y"
         {
             //$$ = newExpNode(OpK);
             //$$->attr.op = $2->attr.op;
@@ -1775,115 +1785,115 @@ yyreduce:
             yyval->child[0] = yyvsp[-2];
             yyval->child[1] = yyvsp[0];
         }
-#line 1779 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1789 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 60: /* termo: fator  */
-#line 393 "src/cminus.y"
+#line 403 "src/cminus.y"
             {
         yyval = yyvsp[0];
     }
-#line 1787 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1797 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 61: /* mult: TIMES  */
-#line 399 "src/cminus.y"
+#line 409 "src/cminus.y"
           { 
         yyval = newExpNode(OpK);
         yyval->attr.op = TIMES;
         yyval->attr.name = copyString("*");
         }
-#line 1797 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1807 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 62: /* mult: OVER  */
-#line 404 "src/cminus.y"
+#line 414 "src/cminus.y"
            { 
         yyval = newExpNode(OpK);
         yyval->attr.op = OVER; 
         yyval->attr.name = copyString("/");
         }
-#line 1807 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1817 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 63: /* fator: LPAREN expressao RPAREN  */
-#line 412 "src/cminus.y"
+#line 422 "src/cminus.y"
                             { 
         yyval = yyvsp[-1];     
     }
-#line 1815 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1825 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 64: /* fator: var  */
-#line 415 "src/cminus.y"
+#line 425 "src/cminus.y"
           {
         yyval = yyvsp[0];
     }
-#line 1823 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1833 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 65: /* fator: ativacao  */
-#line 418 "src/cminus.y"
+#line 428 "src/cminus.y"
                {
         yyval = yyvsp[0];
     }
-#line 1831 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1841 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 66: /* $@9: %empty  */
-#line 421 "src/cminus.y"
+#line 431 "src/cminus.y"
           { savedNameFator = copyString(tokenString);
                    savedLineNo = lineno; }
-#line 1838 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1848 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 67: /* fator: NUM $@9  */
-#line 423 "src/cminus.y"
+#line 433 "src/cminus.y"
         {
             yyval = newExpNode(ConstK);
             yyval->attr.val = atoi(savedNameFator);
             yyval->lineno = savedLineNo;
         }
-#line 1848 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1858 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 68: /* $@10: %empty  */
-#line 431 "src/cminus.y"
-       { push(copyString(lastTokenString));
+#line 441 "src/cminus.y"
+       { pushChar(copyString(lastTokenString));
                    savedLineNo = lineno; }
-#line 1855 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1865 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 69: /* ativacao: ID $@10 LPAREN args RPAREN  */
-#line 433 "src/cminus.y"
+#line 443 "src/cminus.y"
         {
             //$$ = newExpNode(IdK);
             yyval = newExpNode(FunK);
-            yyval->attr.name = pop();
+            yyval->attr.name = popChar();
             yyval->lineno = savedLineNo;
             yyval->child[0] = yyvsp[-1];
         }
-#line 1867 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1877 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 70: /* args: arg_lista  */
-#line 443 "src/cminus.y"
+#line 453 "src/cminus.y"
               {
         yyval = yyvsp[0];
     }
-#line 1875 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1885 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 71: /* args: %empty  */
-#line 447 "src/cminus.y"
+#line 457 "src/cminus.y"
         {
             yyval = NULL;
         }
-#line 1883 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1893 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 72: /* arg_lista: arg_lista COMMA expressao  */
-#line 454 "src/cminus.y"
+#line 464 "src/cminus.y"
         {
             YYSTYPE t = yyvsp[-2];
             if (t != NULL) {
@@ -1894,19 +1904,19 @@ yyreduce:
                 yyval = yyvsp[0];
             }
         }
-#line 1898 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1908 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 73: /* arg_lista: expressao  */
-#line 464 "src/cminus.y"
+#line 474 "src/cminus.y"
                 {
         yyval = yyvsp[0];
     }
-#line 1906 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1916 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
 
-#line 1910 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1920 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
 
       default: break;
     }
@@ -2099,7 +2109,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 469 "src/cminus.y"
+#line 479 "src/cminus.y"
 
 
 int yyerror(char * message)

@@ -1,27 +1,13 @@
-107a108,148
-> 
-> Building Symbol Table...
-> 
-> Symbol table:
-> 
-> Variable Name  Scope     ID Type  Data Type  Line Numbers             
-> -------------  --------  -------  ---------  -------------------------
-> main                     fun      void        9 
+115a116
 > input                    fun      int        
-> a              main      var      int        10 11 
-> a              f         var      int         1  2 
-> b              main      var      int        10 11 
-> b              f         var      int         1  2 
-> f                        fun      int         1 11 
-> g                        fun      int         5 11 
+121a123
 > output                   fun      void       
-> x              main      var      int        10 11 
-> x              g         var      int         5  6 
-> 
+124a127,128
 > Checking for main...
 > 
-> Checking types...
-> 
+127c131,148
+< Type Checking Finished
+---
 > Semantic analysis finished
 > * C- Compilation to 3 Address Intermediate Code
 > 

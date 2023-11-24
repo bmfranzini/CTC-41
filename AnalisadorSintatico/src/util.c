@@ -194,6 +194,9 @@ void printTree(TreeNode *tree)
                 case IdK:
                     fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
+                case VarK:
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
+                    break;
                 case FunK:
                     fprintf(listing, "Activation: %s\n", tree->attr.name);
                     break; 
@@ -208,13 +211,13 @@ void printTree(TreeNode *tree)
             switch (tree->kind.dec) 
             {
                 case VarDecK:
-                    fprintf(listing, "Var Declaration: %s\n", tree->attr.name);
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
                 case ArrDecK:
-                    fprintf(listing, "Array Declaration: %s[%d]\n", tree->attr.name, tree->attr.val);
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
                 case FunDecK:
-                    fprintf(listing, "Function Declaration: %s\n", tree->attr.name);
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
                 case ParamK:
                     fprintf(listing, "Parameter: %s\n", tree->attr.name);
@@ -240,27 +243,86 @@ void printTree(TreeNode *tree)
     UNINDENT;
 }
 
-void initStack() {
-    stack.top = -1;
+void initStackChar() {
+    stackSavedString.top = -1;
 }
 
-int isFull() {
-    return stack.top == 10 - 1;
+int isFullChar() {
+    return stackSavedString.top == 100 - 1;
 }
 
-int isEmpty() {
-    return stack.top == -1;
+int isEmptyChar() {
+    return stackSavedString.top == -1;
 }
 
-void push(char *item) {
-    if (!isFull()) {
-        stack.items[++stack.top] = item;
+void pushChar(char *item) {
+    if (!isFullChar()) {
+        stackSavedString.items[++stackSavedString.top] = item;
     }
 }
 
-char* pop() {
-    if (!isEmpty()) {
-        return stack.items[stack.top--];
+char* popChar( ) {
+    if (!isEmptyChar()) {
+        return stackSavedString.items[stackSavedString.top--];
+    }
+    return NULL;
+}
+
+void initStackInt() {
+    stackLineno.top = -1;
+}
+
+int isFullInt() {
+    return stackLineno.top == 100 - 1;
+}
+
+int isEmptyInt() {
+    return stackLineno.top == -1;
+}
+
+void pushInt(int item) {
+    if (!isFullInt()) {
+        stackLineno.items[++stackLineno.top] = item;
+    }
+    else
+     stackLineno.items[++stackLineno.top] = item;
+}
+
+int popInt() {
+    if (!isEmptyInt()) {
+        return stackLineno.items[stackLineno.top--];
+    }
+    return -1;
+}
+
+void initStackScope() {
+    stackScope.top = -1;
+}
+
+int isFullScope() {
+    return stackScope.top == 100 - 1;
+}
+
+int isEmptyScope() {
+    return stackScope.top == -1;
+}
+
+void pushScope(char *item) {
+    if (!isFullScope()) {
+        stackScope.items[++stackScope.top] = item;
+    }
+}
+
+char* popScope( ) {
+    if (!isEmptyScope()) {
+        return stackScope.items[stackScope.top--];
+    }
+    return NULL;
+}
+
+char* topScope( ) {
+    if (!isEmptyScope()) {
+        return stackScope.items[stackScope.top];
     }
     return NULL;
 }

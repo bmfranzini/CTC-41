@@ -1,24 +1,16 @@
-130a131,179
-> 
-> Building Symbol Table...
-> 
-> Symbol table:
-> 
-> Variable Name  Scope     ID Type  Data Type  Line Numbers             
-> -------------  --------  -------  ---------  -------------------------
-> gdc                      fun      int         3  6 15 
-> main                     fun      void        9 
+140,141c140,142
+< input                    fun      void         13   14 
+< u              gdc       var      int           3    5    6   15 
+---
 > input                    fun      int        13 14 
 > u              gdc       var      int         3  5  6 
 > output                   fun      void       15 
-> v              gdc       var      int         3  5  6 
-> x              main      var      int        11 13 15 
-> y              main      var      int        12 14 15 
-> 
+145a147,148
 > Checking for main...
 > 
-> Checking types...
-> 
+148c151,179
+< Type Checking Finished
+---
 > Semantic analysis finished
 > * C- Compilation to 3 Address Intermediate Code
 > 

@@ -1,16 +1,9 @@
-65a66,80
-> 
-> Building Symbol Table...
-> 
-> Symbol table:
-> 
-> Variable Name  Scope     ID Type  Data Type  Line Numbers             
-> -------------  --------  -------  ---------  -------------------------
-> funTwo                   fun      int         5 
+73a74
 > input                    fun      int        
-> funOne                   fun      int         1 
-> output                   fun      void        2  6 10 
-> funThree                 fun      int         9 
-> 
+78,80c79,80
+< Checking types...
+< 
+< Type Checking Finished
+---
 > Checking for main...
 > Semantic error: undefined reference to 'main'

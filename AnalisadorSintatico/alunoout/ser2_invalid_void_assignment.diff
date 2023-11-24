@@ -1,20 +1,11 @@
-55a56,74
-> 
-> Building Symbol Table...
-> 
-> Symbol table:
-> 
-> Variable Name  Scope     ID Type  Data Type  Line Numbers             
-> -------------  --------  -------  ---------  -------------------------
-> main                     fun      void        6 
+63a64
 > input                    fun      int        
-> a              main      var      int         8  9 
-> exemplo                  fun      void        1  9 
-> output                   fun      void        3 
-> 
+67a69,70
 > Checking for main...
 > 
-> Checking types...
+68a72
 > Semantic error at line 9: invalid use of void expression
-> 
+70c74
+< Type Checking Finished
+---
 > Semantic analysis finished

@@ -9,10 +9,11 @@
 #include "globals.h"
 #include "symtab.h"
 #include "analyze.h"
+#include "util.h"
 
 /* counter for variable memory locations */
 static int location = 0;
-
+StackScope stackScope;
 /* Procedure traverse is a generic recursive 
  * syntax tree traversal routine:
  * it applies preProc in preorder and postProc 
@@ -37,8 +38,25 @@ static void traverse( TreeNode * t,
  * traversals from traverse
  */
 static void nullProc(TreeNode * t)
-{ if (t==NULL) return;
-  else return;
+{ 
+  if (t==NULL) return;
+  else {
+    switch (t->nodekind)
+    {
+        case DecK: 
+            switch (t->kind.dec)
+            { 
+                case FunDecK:
+                    if (!isEmptyScope()){
+                        popScope();
+                    } 
+                    break;
+                default:
+                    break;
+            }
+    }
+    return;
+  }
 }
 
 /* Procedure insertNode inserts 
@@ -47,33 +65,87 @@ static void nullProc(TreeNode * t)
  */
 static void insertNode(TreeNode * t)
 {
+    char* scope = "";
+    char* fun = "fun";
+    char* var = "var";
+    char* array = "array";
+    char* voidType = "void";
+    char* intType = "int";
+
     switch (t->nodekind)
     {
-        case StmtK:
-            switch (t->kind.stmt)
-            {
-                case AssignK:
-                    if (st_lookup(t->attr.name) == -1)
-                        st_insert(t->attr.name, t->lineno, location++);
-                    else
-                        st_insert(t->attr.name, t->lineno, 0);
-                    break;
+        // case StmtK:
+        //     switch (t->kind.stmt)
+        //     {//void st_insert( char * name, char * scope, char * IdType, char * DataType, int lineno, int loc )
+        //         case AssignK:
+        //             if (st_lookup(t->attr.name) == -1)
+        //                 st_insert(t->attr.name, t->lineno, 0);
+        //                 // st_insert(t->attr.name, "scope", t->type);
+        //             else
+        //                 st_insert(t->attr.name, t->lineno, 0);
+        //             break;
                 
-                default:
-                    break;
-            }
-            break;
+        //         default:
+        //             break;
+        //     }
+        //     break;
 
         case ExpK:
+        //void st_insert( char * name, char * scope, char * IdType, char * DataType, int lineno, int loc )
             switch (t->kind.exp)
             {
-                case IdK:
+                case FunK:
+                    if(t->type == Void){
+                        st_insert(t->attr.name, scope, fun, voidType, t->lineno, 0);
+                        // if (isEmptyScope()){
+                        //     st_insert(t->attr.name, scope, fun, voidType, t->lineno, 0);
+                        // }
+                        // else{
+                        //     st_insert(t->attr.name, topScope(), fun, voidType, t->lineno, 0);
+                        // }
+                    }
+                    else {
+                        if (isEmptyScope()){
+                            st_insert(t->attr.name, scope, fun, intType, t->lineno, 0);
+                        }
+                        else{
+                            st_insert(t->attr.name, topScope(), fun, intType, t->lineno, 0);
+                        }
+                    }
+                        // st_insert(t->attr.name, scope, fun, intType, t->lineno, 0);
+                    break;
+                case IdK:  // Presumindo que ArrK seja uma enum para arrays no C-
+                    if (isEmptyScope()){
+                        st_insert(t->attr.name, scope, var, intType, t->lineno, 0);
+                    }
+                    else{
+                        st_insert(t->attr.name, topScope(), var, intType, t->lineno, 0);
+                    }
+                    break;
                 case VarK:  // Presumindo que VarK seja uma enum para variáveis no C-
-                case ArrK:  // Presumindo que ArrK seja uma enum para arrays no C-
-                    if (st_lookup(t->attr.name) == -1)
-                        st_insert(t->attr.name, t->lineno, location++);
-                    else
-                        st_insert(t->attr.name, t->lineno, 0);
+                    // st_insert(t->attr.name, scope, var, intType, t->lineno, 0);
+                    char* auxType;
+                    if (t->type == Integer){
+                        auxType = "int";
+                    }
+                    else {
+                        auxType = "void";
+                    }
+                    if (isEmptyScope()){
+                        st_insert(t->attr.name, scope, var, auxType, t->lineno, 0);
+                    }
+                    else{
+                        st_insert(t->attr.name, topScope(), var, auxType, t->lineno, 0);
+                    }
+                    break;
+                case ArrK:
+                    // st_insert(t->attr.name, scope, array, intType, t->lineno, 0);
+                    if (isEmptyScope()){
+                        st_insert(t->attr.name, scope, array, intType, t->lineno, 0);
+                    }
+                    else{
+                        st_insert(t->attr.name, topScope(), array, intType, t->lineno, 0);
+                    }
                     break;
                 default:
                     break;
@@ -81,24 +153,55 @@ static void insertNode(TreeNode * t)
             break;
         case DecK: 
             switch (t->kind.dec)
-            {
-                case FunK:
-                case VarDecK:
-                case ArrDecK:
-                    if (st_lookup(t->attr.name) == -1)
-                        st_insert(t->attr.name, t->lineno, location++);
-                    else
-                        st_insert(t->attr.name, t->lineno, 0);
+            { 
+                case FunDecK:
+                    if(t->type == Void){ 
+                        // st_insert(t->attr.name, topScope(), fun, voidType, t->lineno, 0);
+                        if (isEmptyScope()){
+                            st_insert(t->attr.name, scope, fun, voidType, t->lineno, 0);
+                        }
+                        else{
+                            st_insert(t->attr.name, topScope(), fun, voidType, t->lineno, 0);
+                        }
+                    }
+                    else{
+                        // st_insert(t->attr.name, topScope(), fun, intType, t->lineno, 0);
+                        if (isEmptyScope()){
+                            st_insert(t->attr.name, scope, fun, intType, t->lineno, 0);
+                        }
+                        else{
+                            st_insert(t->attr.name, topScope(), fun, intType, t->lineno, 0);
+                        }
+                    }    
+                    pushScope(t->attr.name);
                     break;
-
+                case VarDecK:  // Presumindo que VarK seja uma enum para variáveis no C-
+                    char* auxType;
+                    if (t->type == Integer){
+                        auxType = "int";
+                    }
+                    else {
+                        auxType = "void";
+                    }
+                    if (isEmptyScope()){
+                        st_insert(t->attr.name, scope, var, auxType, t->lineno, 0);
+                    }
+                    else{
+                        st_insert(t->attr.name, topScope(), var, auxType, t->lineno, 0);
+                    }
+                    break;
+                case ArrDecK:
+                    if (isEmptyScope()){
+                        st_insert(t->attr.name, scope, array, intType, t->lineno, 0);
+                    }
+                    else{
+                        st_insert(t->attr.name, topScope(), array, intType, t->lineno, 0);
+                    }
+                    break;
                 default:
                     break;
-            }
-            break;
-
-        default:
-            break;
     }
+}
 }
 
 /* Function buildSymtab constructs the symbol 

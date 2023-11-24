@@ -47,6 +47,9 @@ typedef struct LineListRec
  */
 typedef struct BucketListRec
    { char * name;
+     char * scope;
+     char * IdType;
+     char * DataType;
      LineList lines;
      int memloc ; /* memory location for variable */
      struct BucketListRec * next;
@@ -60,14 +63,20 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char * name, int lineno, int loc )
+
+     
+void st_insert( char * name, char * scope, char * IdType, char * DataType, int lineno, int loc )
 { int h = hash(name);
   BucketList l =  hashTable[h];
-  while ((l != NULL) && (strcmp(name,l->name) != 0))
+
+  while ((l != NULL) && ((strcmp(name, l->name) != 0) != (strcmp(scope, l->scope) != 0)))
     l = l->next;
   if (l == NULL) /* variable not yet in table */
   { l = (BucketList) malloc(sizeof(struct BucketListRec));
     l->name = name;
+    l->scope = scope;
+    l->IdType = IdType;
+    l->DataType = DataType;
     l->lines = (LineList) malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
     l->memloc = loc;
@@ -77,9 +86,12 @@ void st_insert( char * name, int lineno, int loc )
   else /* found in table, so just add line number */
   { LineList t = l->lines;
     while (t->next != NULL) t = t->next;
-    t->next = (LineList) malloc(sizeof(struct LineListRec));
-    t->next->lineno = lineno;
-    t->next->next = NULL;
+
+    if(t->lineno != lineno){
+      t->next = (LineList) malloc(sizeof(struct LineListRec));
+      t->next->lineno = lineno;
+      t->next->next = NULL;
+    }
   }
 } /* st_insert */
 
@@ -92,7 +104,7 @@ int st_lookup ( char * name )
   while ((l != NULL) && (strcmp(name,l->name) != 0))
     l = l->next;
   if (l == NULL) return -1;
-  else return l->memloc;
+  else return 0;
 }
 
 /* Procedure printSymTab prints a formatted 
@@ -100,15 +112,17 @@ int st_lookup ( char * name )
  */
 void printSymTab()
 { int i;
-  pc("Variable Name  Location   Line Numbers\n");
-  pc("-------------  --------   ------------\n");
+  pc("Variable Name  Scope     ID Type  Data Type  Line Numbers \n");
+  pc("-------------  --------  -------  ---------  -------------------------\n");
   for (i=0;i<SIZE;++i)
   { if (hashTable[i] != NULL)
     { BucketList l = hashTable[i];
       while (l != NULL)
       { LineList t = l->lines;
         pc("%-14s ",l->name);
-        pc("%-8d  ",l->memloc);
+        pc("%-8s  ",l->scope);
+        pc("%-7s  ",l->IdType);
+        pc("%-9s  ",l->DataType);
         while (t != NULL)
         { pc("%4d ",t->lineno);
           t = t->next;

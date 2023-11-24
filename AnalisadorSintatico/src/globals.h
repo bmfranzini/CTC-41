@@ -55,9 +55,21 @@ typedef int TokenType;
 typedef struct {
     int top;
     char *items[100];
-} Stack;
+} StackChar;
 
-extern Stack stack;
+typedef struct {
+    int top;
+    int items[100];
+} StackInt;
+
+typedef struct {
+    int top;
+    char *items[100];
+} StackScope;
+
+extern StackInt stackLineno;
+extern StackChar stackSavedString;
+extern StackScope stackScope;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */

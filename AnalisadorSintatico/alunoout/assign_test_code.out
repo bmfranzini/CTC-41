@@ -97,3 +97,20 @@ Syntax tree:
         Op: +
           Id: x
           Const: 1
+
+Building Symbol Table...
+
+Symbol table:
+
+Variable Name  Scope     ID Type  Data Type  Line Numbers 
+-------------  --------  -------  ---------  -------------------------
+main                     fun      void          8 
+funOne                   fun      void          1 
+a              funOne    var      int           2    5 
+b              funOne    var      int           3    4    5 
+x              main      var      int           9   11 
+y              main      var      int          10   11 
+
+Checking types...
+
+Type Checking Finished

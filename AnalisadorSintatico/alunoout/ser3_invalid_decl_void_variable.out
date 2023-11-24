@@ -22,3 +22,16 @@ Syntax tree:
     Id: main
       Type: void
         Id: a
+
+Building Symbol Table...
+
+Symbol table:
+
+Variable Name  Scope     ID Type  Data Type  Line Numbers 
+-------------  --------  -------  ---------  -------------------------
+main                     fun      void          1 
+a              main      var      void          3 
+
+Checking types...
+
+Type Checking Finished
