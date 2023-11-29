@@ -1,0 +1,16 @@
+cd AnalisadorSintatico/src
+
+flex cminus.l && bison -d cminus.y -o parser.c && gcc *.c ../lib/log.c -o cminus -lfl -I../lib && ./cminus teste.cm
+
+
+mkdir build
+cd build
+sudo cmake ..
+sudo make
+chmod +x ../scripts/runlex
+chmod +x ../scripts/rundiff
+
+ ../build/mylex ../example/missing_key.cm
+
+
+ Mudar a main pro próximo lab pra possibilitar rodar o ddiff (por causa da nova forma de lidar com os args)

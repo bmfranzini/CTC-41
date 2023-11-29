@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/mylex.dir/src/analyze.c.o CMakeFiles/mylex.dir/src/cgen.c.o CMakeFiles/mylex.dir/src/code.c.o CMakeFiles/mylex.dir/src/main.c.o CMakeFiles/mylex.dir/src/symtab.c.o CMakeFiles/mylex.dir/src/util.c.o CMakeFiles/mylex.dir/lib/log.c.o CMakeFiles/mylex.dir/parser.c.o CMakeFiles/mylex.dir/lexer.c.o -o mylex 
