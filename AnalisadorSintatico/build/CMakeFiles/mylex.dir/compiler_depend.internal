@@ -279,6 +279,7 @@ CMakeFiles/mylex.dir/src/analyze.c.o
  /home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.h
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/symtab.h
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/analyze.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/src/util.h
 
 CMakeFiles/mylex.dir/src/cgen.c.o
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/cgen.c
@@ -477,6 +478,7 @@ CMakeFiles/mylex.dir/src/main.c.o
  /home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.h
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/util.h
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/parse.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/src/analyze.h
 
 CMakeFiles/mylex.dir/src/symtab.c.o
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/symtab.c
@@ -537,7 +539,12 @@ CMakeFiles/mylex.dir/src/symtab.c.o
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h
  /usr/include/strings.h
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/symtab.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/src/globals.h
+ /usr/include/ctype.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/lib/log.h
+ /home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.h
 
 CMakeFiles/mylex.dir/src/util.c.o
  /home/rodrigo/CTC-41/AnalisadorSintatico/src/util.c

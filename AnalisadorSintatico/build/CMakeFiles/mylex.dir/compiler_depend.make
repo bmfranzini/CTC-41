@@ -274,7 +274,8 @@ CMakeFiles/mylex.dir/src/analyze.c.o: ../src/analyze.c \
   ../lib/log.h \
   parser.h \
   ../src/symtab.h \
-  ../src/analyze.h
+  ../src/analyze.h \
+  ../src/util.h
 
 CMakeFiles/mylex.dir/src/cgen.c.o: ../src/cgen.c \
   /usr/include/stdc-predef.h \
@@ -469,7 +470,8 @@ CMakeFiles/mylex.dir/src/main.c.o: ../src/main.c \
   ../lib/log.h \
   parser.h \
   ../src/util.h \
-  ../src/parse.h
+  ../src/parse.h \
+  ../src/analyze.h
 
 CMakeFiles/mylex.dir/src/symtab.c.o: ../src/symtab.c \
   /usr/include/stdc-predef.h \
@@ -529,7 +531,12 @@ CMakeFiles/mylex.dir/src/symtab.c.o: ../src/symtab.c \
   /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
   /usr/include/strings.h \
-  ../src/symtab.h
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
+  ../src/symtab.h \
+  ../src/globals.h \
+  /usr/include/ctype.h \
+  ../lib/log.h \
+  parser.h
 
 CMakeFiles/mylex.dir/src/util.c.o: ../src/util.c \
   /usr/include/stdc-predef.h \
@@ -597,6 +604,8 @@ CMakeFiles/mylex.dir/src/util.c.o: ../src/util.c \
 
 
 ../src/util.c:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h:
 
 ../src/main.c:
 
