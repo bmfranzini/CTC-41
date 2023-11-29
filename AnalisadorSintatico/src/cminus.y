@@ -24,9 +24,11 @@ static char * savedNameFator;
 static char * savedNameAtivacao; /* for use in assignments */
 static int savedLineNo;
 static int savedLineNo2;  /* ditto */
+static int savedLineNo3; 
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
-Stack stack;
+StackInt stackLineno;
+StackChar stackSavedString;
 int yyerror(char *);
 %}
 
@@ -67,9 +69,11 @@ var_declaracao:
                    savedLineNo = lineno; } SEMI
     { 
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        //YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(VarDecK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = $1->type;
         $1->child[0] = newNodeS2;
     }
     | tipo_especificador ID { savedNameVarDeclaracao = copyString(lastTokenString);
@@ -77,14 +81,17 @@ var_declaracao:
                    savedLineNo2 = lineno; } RBRACKET SEMI
     { 
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        //YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(ArrDecK);
         newNodeS2->attr.name = savedNameVarDeclaracao;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = $1->type;
         $1->child[0] = newNodeS2;
 
         YYSTYPE newNodeS3 = newExpNode(ConstK);
         newNodeS3->attr.val = atoi(savedNameVarDeclaracao2);
         newNodeS3->lineno = savedLineNo2;
+        newNodeS3->type = newNodeS2->type;
         newNodeS2->child[0] = newNodeS3;
 
     }
@@ -107,13 +114,14 @@ tipo_especificador:
 ;
 
 fun_declaracao:
-    tipo_especificador ID { savedNameFunDeclaracao = copyString(lastTokenString);
-                  savedLineNo = lineno; } LPAREN params RPAREN composto_decl
+    tipo_especificador ID { pushInt(lineno); savedNameFunDeclaracao = copyString(lastTokenString);
+             } LPAREN params RPAREN composto_decl
     { 
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(FunDecK);
         newNodeS2->attr.name = savedNameFunDeclaracao;
-        newNodeS2->lineno = savedLineNo;
+        newNodeS2->lineno = popInt();
+        newNodeS2->type = $1->type;
         $1->child[0] = newNodeS2;
         $1->child[0]->child[0] = $5;
         $1->child[0]->child[1] = $7;
@@ -145,18 +153,20 @@ param:
                    savedLineNo = lineno; }
     {
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(VarDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = $1->type;
         $1->child[0] = newNodeS2;
     }
     | tipo_especificador ID { savedNameParam = copyString(lastTokenString);
                    savedLineNo = lineno; } LBRACKET RBRACKET
     {
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(IdK);
+        YYSTYPE newNodeS2 = newDecNode(ArrDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
+        newNodeS2->type = $1->type;
         $1->child[0] = newNodeS2;
     }
 ;
@@ -295,14 +305,14 @@ var:
     ID { savedNameVar = copyString(lastTokenString);
                    savedLineNo = lineno; }
         {
-            $$ = newExpNode(IdK);
+            $$ = newExpNode(VarK);
             $$->attr.name = savedNameVar;
             $$->lineno = savedLineNo;
         }
     | ID { savedNameVar2 = copyString(lastTokenString);
                    savedLineNo = lineno; } LBRACKET expressao RBRACKET
         {
-            $$ = newExpNode(IdK);
+            $$ = newExpNode(ArrK);
             $$->attr.name = savedNameVar2;
             $$->lineno = savedLineNo;
             $$->child[0] = $4;
@@ -428,13 +438,14 @@ fator:
     ;
 
 ativacao:
-    ID { push(copyString(lastTokenString));
+    ID { pushChar(copyString(lastTokenString));
                    savedLineNo = lineno; } LPAREN args RPAREN
         {
             //$$ = newExpNode(IdK);
             $$ = newExpNode(FunK);
-            $$->attr.name = pop();
+            $$->attr.name = popChar();
             $$->lineno = savedLineNo;
+            //$$->type = Integer;
             $$->child[0] = $4;
         }
     ;

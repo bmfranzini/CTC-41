@@ -35,14 +35,25 @@ char * copyString( char * );
 void printTree( TreeNode * );
 
 
-void initStack();
 
-int isFull();
+void initStackChar();
+int isFullChar();
+int isEmptyChar();
+void pushChar(char*);
+char* popChar();
 
-int isEmpty();
+void initStackInt();
+int isFullInt();
+int isEmptyInt();
+void pushInt(int);
+int popInt();
 
-void push(char *);
-
-char* pop();
+void initStackScope();
+int isFullScope();
+int isEmptyScope();
+void pushScope(char*);
+char* popScope();
+char* topScope();
+char* topScope2();
 
 #endif

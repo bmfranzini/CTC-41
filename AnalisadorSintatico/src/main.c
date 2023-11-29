@@ -10,12 +10,12 @@
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
 #define NO_PARSE FALSE
 /* set NO_ANALYZE to TRUE to get a parser-only compiler */
-#define NO_ANALYZE TRUE
+#define NO_ANALYZE FALSE //false para criar tabela simbolos
 
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -41,7 +41,7 @@ char *lines[100];
 int EchoSource = TRUE;
 int TraceScan = TRUE;
 int TraceParse = TRUE;
-int TraceAnalyze = FALSE;
+int TraceAnalyze = TRUE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
@@ -113,7 +113,11 @@ int main( int argc, char * argv[] )
 #if NO_PARSE
   while (getToken()!=ENDFILE);
 #else
-  initStack();
+  initStackInt();
+  initStackChar();
+  initStackScope();
+  char * empty = "";
+  pushScope(empty);
   fprintf(listing,"\nStart parse():\n");
   syntaxTree = parse();
   if (TraceParse) {
@@ -124,9 +128,20 @@ int main( int argc, char * argv[] )
   if (! Error)
   { if (TraceAnalyze) fprintf(listing,"\nBuilding Symbol Table...\n");
     buildSymtab(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nChecking Types...\n");
-    typeCheck(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
+    if (TraceAnalyze) {fprintf(listing,"\nChecking for main...\n");
+      int auxMainCheck = mainCheck();
+      if (auxMainCheck == -1) {
+        fprintf(listing,"Semantic error: undefined reference to 'main'\n");
+      }
+      else {
+        if (TraceAnalyze && !Error) {
+           fprintf(listing,"\nChecking types...\n");
+          typeCheck(syntaxTree);
+        }
+        if (TraceAnalyze && !Error) fprintf(listing,"\nSemantic analysis finished\n");
+      }
+    }
+    
   }
 #if !NO_CODE
   if (! Error)
