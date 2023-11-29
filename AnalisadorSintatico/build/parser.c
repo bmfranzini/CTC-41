@@ -589,7 +589,7 @@ static const yytype_int16 yyrline[] =
      285,   293,   299,   305,   305,   312,   312,   323,   331,   337,
      342,   347,   352,   357,   362,   370,   376,   382,   387,   395,
      403,   409,   414,   422,   425,   428,   431,   431,   441,   441,
-     453,   457,   463,   474
+     454,   458,   464,   475
 };
 #endif
 
@@ -1409,7 +1409,7 @@ yyreduce:
 #line 154 "src/cminus.y"
     {
         yyval = yyvsp[-2];
-        YYSTYPE newNodeS2 = newExpNode(VarK);
+        YYSTYPE newNodeS2 = newDecNode(VarDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
         newNodeS2->type = yyvsp[-2]->type;
@@ -1429,7 +1429,7 @@ yyreduce:
 #line 164 "src/cminus.y"
     {
         yyval = yyvsp[-4];
-        YYSTYPE newNodeS2 = newExpNode(VarK);
+        YYSTYPE newNodeS2 = newDecNode(ArrDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
         newNodeS2->type = yyvsp[-4]->type;
@@ -1650,7 +1650,7 @@ yyreduce:
   case 46: /* var: ID $@8 LBRACKET expressao RBRACKET  */
 #line 314 "src/cminus.y"
         {
-            yyval = newExpNode(VarK);
+            yyval = newExpNode(ArrK);
             yyval->attr.name = savedNameVar2;
             yyval->lineno = savedLineNo;
             yyval->child[0] = yyvsp[-1];
@@ -1871,29 +1871,30 @@ yyreduce:
             yyval = newExpNode(FunK);
             yyval->attr.name = popChar();
             yyval->lineno = savedLineNo;
+            //$$->type = Integer;
             yyval->child[0] = yyvsp[-1];
         }
-#line 1877 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1878 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 70: /* args: arg_lista  */
-#line 453 "src/cminus.y"
+#line 454 "src/cminus.y"
               {
         yyval = yyvsp[0];
     }
-#line 1885 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1886 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 71: /* args: %empty  */
-#line 457 "src/cminus.y"
+#line 458 "src/cminus.y"
         {
             yyval = NULL;
         }
-#line 1893 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1894 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 72: /* arg_lista: arg_lista COMMA expressao  */
-#line 464 "src/cminus.y"
+#line 465 "src/cminus.y"
         {
             YYSTYPE t = yyvsp[-2];
             if (t != NULL) {
@@ -1904,19 +1905,19 @@ yyreduce:
                 yyval = yyvsp[0];
             }
         }
-#line 1908 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1909 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
   case 73: /* arg_lista: expressao  */
-#line 474 "src/cminus.y"
+#line 475 "src/cminus.y"
                 {
         yyval = yyvsp[0];
     }
-#line 1916 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1917 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
     break;
 
 
-#line 1920 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
+#line 1921 "/home/rodrigo/CTC-41/AnalisadorSintatico/build/parser.c"
 
       default: break;
     }
@@ -2109,7 +2110,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 479 "src/cminus.y"
+#line 480 "src/cminus.y"
 
 
 int yyerror(char * message)

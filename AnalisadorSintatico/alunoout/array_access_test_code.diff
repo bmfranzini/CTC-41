@@ -1,13 +1,4 @@
-155a156
-> input                    fun      int        
-159a161,163
-> output                   fun      void       
-> 
-> Checking for main...
-163c167,194
-< Type Checking Finished
----
-> Semantic analysis finished
+167a168,194
 > * C- Compilation to 3 Address Intermediate Code
 > 
 >       main:

@@ -1,9 +1,0 @@
-73a74
-> input                    fun      int        
-78,80c79,80
-< Checking types...
-< 
-< Type Checking Finished
----
-> Checking for main...
-> Semantic error: undefined reference to 'main'

@@ -11,7 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "symtab.h"
+#include "globals.h"
 
 /* SIZE is the size of the hash table */
 #define SIZE 211
@@ -38,7 +40,6 @@ typedef struct LineListRec
    { int lineno;
      struct LineListRec * next;
    } * LineList;
-
 /* The record in the bucket lists for
  * each variable, including name, 
  * assigned memory location, and
@@ -51,7 +52,7 @@ typedef struct BucketListRec
      char * IdType;
      char * DataType;
      LineList lines;
-     int memloc ; /* memory location for variable */
+     char * type ; /* memory location for variable */
      struct BucketListRec * next;
    } * BucketList;
 
@@ -64,13 +65,51 @@ static BucketList hashTable[SIZE];
  * first time, otherwise ignored
  */
 
-     
-void st_insert( char * name, char * scope, char * IdType, char * DataType, int lineno, int loc )
-{ int h = hash(name);
+void init_hashTable(){
+  char *input = "input";
+  int h = hash(input);
+  BucketList l = hashTable[h];
+  l = (BucketList) malloc(sizeof(struct BucketListRec));
+  l->name = input;
+  l->scope = "";
+  l->IdType = "fun";
+  l->DataType = "int";
+  l->lines = (LineList) malloc(sizeof(struct LineListRec));
+  l->lines->lineno = -1;
+  l->type = "";
+  l->lines->next = NULL;
+  l->next = hashTable[h];
+  hashTable[h] = l;
+  char *output = "output";
+  int h_out = hash(output);
+  BucketList l_out = hashTable[h_out];
+  l_out = (BucketList) malloc(sizeof(struct BucketListRec));
+  l_out->name = output;
+  l_out->scope = "";
+  l_out->IdType = "fun";
+  l_out->DataType = "void";
+  l_out->lines = (LineList) malloc(sizeof(struct LineListRec));
+  l_out->lines->lineno = -1;
+  l_out->type = "";
+  l_out->lines->next = NULL;
+  l_out->next = hashTable[h_out];
+  hashTable[h_out] = l_out;
+}
+void st_insert( char * name, char * scope, char * IdType, char * DataType, int lineno, char * type )
+{ 
+  int h = hash(name);
   BucketList l =  hashTable[h];
-
-  while ((l != NULL) && ((strcmp(name, l->name) != 0) != (strcmp(scope, l->scope) != 0)))
-    l = l->next;
+  char *input = "input";
+  char *output = "output";
+  char *vazio = "";
+  if (strcmp(name, input) !=0 && strcmp(name, output) != 0){
+    while ((l != NULL) && ((strcmp(name, l->name) != 0) || ((strcmp(name, l->name) == 0) && strcmp(scope, l->scope) != 0 && (strcmp(vazio, l->scope) != 0 || (l->IdType != IdType)))))//&& (l->IdType != IdType)
+      l = l->next;
+  }
+  else {
+    while ((l != NULL) && ((strcmp(name, l->name) != 0)))
+      l = l->next;
+  }
   if (l == NULL) /* variable not yet in table */
   { l = (BucketList) malloc(sizeof(struct BucketListRec));
     l->name = name;
@@ -79,7 +118,7 @@ void st_insert( char * name, char * scope, char * IdType, char * DataType, int l
     l->DataType = DataType;
     l->lines = (LineList) malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
-    l->memloc = loc;
+    l->type = type;
     l->lines->next = NULL;
     l->next = hashTable[h];
     hashTable[h] = l; }
@@ -107,6 +146,85 @@ int st_lookup ( char * name )
   else return 0;
 }
 
+char * find_type(char *name, int line) {
+  int h = hash(name);
+  BucketList l =  hashTable[h];
+  bool foundName = FALSE;
+  bool foundLine = FALSE;
+  //while ((l != NULL) && ((strcmp(name,l->name) != 0) || (strcmp(scope,l->scope) != 0))){// || (compareType != 0))){//|| (strcmp(type,l->type) != 0)
+  //while (!((l == NULL) || ((strcmp(name,l->name) == 0))) ){
+  while (!((l == NULL) || (foundName && foundLine))) {
+    foundName = FALSE;
+    if (strcmp(name,l->name) == 0) {
+      LineList temp = l->lines;
+      while (temp != NULL && temp->lineno != line) {
+        temp = temp->next;
+      }
+      if (temp != NULL && temp->lineno == line) {
+        foundLine = TRUE;
+        foundName = TRUE;
+        return l->DataType;
+      }
+      
+    }
+    l = l->next;
+    //pc("loop\n");
+  }
+  if (l == NULL) return "bizarro";
+  else {
+    return l->DataType;
+  }
+}
+
+char* st_lookupScopeType( char * name, char * scope, char * type )
+{ int h = hash(name);
+  BucketList l =  hashTable[h];
+
+  //while ((l != NULL) && ((strcmp(name,l->name) != 0) || (strcmp(scope,l->scope) != 0))){// || (compareType != 0))){//|| (strcmp(type,l->type) != 0)
+  while (!((l == NULL) || ((strcmp(name,l->name) == 0) && (strcmp(scope,l->scope) == 0)))){
+    l = l->next;
+  }
+  if (l == NULL) return "bizarro2";
+  else {
+    return l->DataType;
+  }
+}
+
+int st_lookupScope ( char * name, char * scope, char * type )
+{ int h = hash(name);
+  BucketList l =  hashTable[h];
+  // int compareType = 0;
+  // if (strcmp(type, "FunDecK") == 0) {
+  //   compareType = strcmp(type,l->type);
+  // }
+  //while ((l != NULL) && ((strcmp(name,l->name) != 0) || (strcmp(scope,l->scope) != 0))){// || (compareType != 0))){//|| (strcmp(type,l->type) != 0)
+  while (!((l == NULL) || ((strcmp(name,l->name) == 0) && (strcmp(scope,l->scope) == 0)))){
+    l = l->next;
+    // if (l != NULL && strcmp(type, "FunDecK") == 0) {
+    //   compareType = strcmp(type,l->type);
+    // }
+  }
+  if (l == NULL) return -1;
+  else {
+    
+    return 0;
+  }
+}
+
+int st_lookupFunDecK ( char * name, char * scope)
+{ int h = hash(name);
+  BucketList l =  hashTable[h];
+  while (!((l == NULL) || ((strcmp(name,l->name) == 0) && (strcmp(scope,l->scope) == 0)))){
+    l = l->next;
+  }
+  if (l == NULL ) return -1;
+  else if (strcmp(l->type, "FunDecK") == 0){
+    return 0;
+  }
+  else {
+    return -1;
+  }
+}
 /* Procedure printSymTab prints a formatted 
  * list of the symbol table contents 
  */
@@ -124,7 +242,10 @@ void printSymTab()
         pc("%-7s  ",l->IdType);
         pc("%-9s  ",l->DataType);
         while (t != NULL)
-        { pc("%4d ",t->lineno);
+        { 
+          if (t->lineno != -1){
+            pc("%4d ",t->lineno);
+          }
           t = t->next;
         }
         pc("\n");

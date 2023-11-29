@@ -54,5 +54,6 @@ int isEmptyScope();
 void pushScope(char*);
 char* popScope();
 char* topScope();
+char* topScope2();
 
 #endif

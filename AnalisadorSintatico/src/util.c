@@ -197,6 +197,9 @@ void printTree(TreeNode *tree)
                 case VarK:
                     fprintf(listing, "Id: %s\n", tree->attr.name);
                     break;
+                case ArrK:
+                    fprintf(listing, "Id: %s\n", tree->attr.name);
+                    break;
                 case FunK:
                     fprintf(listing, "Activation: %s\n", tree->attr.name);
                     break; 
@@ -323,6 +326,13 @@ char* popScope( ) {
 char* topScope( ) {
     if (!isEmptyScope()) {
         return stackScope.items[stackScope.top];
+    }
+    return NULL;
+}
+
+char* topScope2( ) {
+    if (stackScope.top >= 1) {
+        return stackScope.items[stackScope.top-1];
     }
     return NULL;
 }

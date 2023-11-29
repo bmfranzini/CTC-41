@@ -116,6 +116,8 @@ int main( int argc, char * argv[] )
   initStackInt();
   initStackChar();
   initStackScope();
+  char * empty = "";
+  pushScope(empty);
   fprintf(listing,"\nStart parse():\n");
   syntaxTree = parse();
   if (TraceParse) {
@@ -126,12 +128,20 @@ int main( int argc, char * argv[] )
   if (! Error)
   { if (TraceAnalyze) fprintf(listing,"\nBuilding Symbol Table...\n");
     buildSymtab(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nChecking types...\n");
-    typeCheck(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
-  }
-  else {
-    fprintf(listing,"\nDeu ruim!\n");
+    if (TraceAnalyze) {fprintf(listing,"\nChecking for main...\n");
+      int auxMainCheck = mainCheck();
+      if (auxMainCheck == -1) {
+        fprintf(listing,"Semantic error: undefined reference to 'main'\n");
+      }
+      else {
+        if (TraceAnalyze && !Error) {
+           fprintf(listing,"\nChecking types...\n");
+          typeCheck(syntaxTree);
+        }
+        if (TraceAnalyze && !Error) fprintf(listing,"\nSemantic analysis finished\n");
+      }
+    }
+    
   }
 #if !NO_CODE
   if (! Error)

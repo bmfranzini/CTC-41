@@ -1,17 +1,4 @@
-140,141c140,142
-< input                    fun      void         13   14 
-< u              gdc       var      int           3    5    6   15 
----
-> input                    fun      int        13 14 
-> u              gdc       var      int         3  5  6 
-> output                   fun      void       15 
-145a147,148
-> Checking for main...
-> 
-148c151,179
-< Type Checking Finished
----
-> Semantic analysis finished
+151a152,179
 > * C- Compilation to 3 Address Intermediate Code
 > 
 >        gdc:

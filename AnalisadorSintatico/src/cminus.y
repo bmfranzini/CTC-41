@@ -153,7 +153,7 @@ param:
                    savedLineNo = lineno; }
     {
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(VarK);
+        YYSTYPE newNodeS2 = newDecNode(VarDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
         newNodeS2->type = $1->type;
@@ -163,7 +163,7 @@ param:
                    savedLineNo = lineno; } LBRACKET RBRACKET
     {
         $$ = $1;
-        YYSTYPE newNodeS2 = newExpNode(VarK);
+        YYSTYPE newNodeS2 = newDecNode(ArrDecK);
         newNodeS2->attr.name = savedNameParam;
         newNodeS2->lineno = savedLineNo;
         newNodeS2->type = $1->type;
@@ -312,7 +312,7 @@ var:
     | ID { savedNameVar2 = copyString(lastTokenString);
                    savedLineNo = lineno; } LBRACKET expressao RBRACKET
         {
-            $$ = newExpNode(VarK);
+            $$ = newExpNode(ArrK);
             $$->attr.name = savedNameVar2;
             $$->lineno = savedLineNo;
             $$->child[0] = $4;
@@ -445,6 +445,7 @@ ativacao:
             $$ = newExpNode(FunK);
             $$->attr.name = popChar();
             $$->lineno = savedLineNo;
+            //$$->type = Integer;
             $$->child[0] = $4;
         }
     ;

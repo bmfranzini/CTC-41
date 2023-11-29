@@ -2,29 +2,7 @@
 < 46: 
 ---
 > 46: }
-442c442
-< input                    fun      void         36 
----
-> input                    fun      int        36 
-444,445c444,445
-< a              sort      var      int          19   24   25   26   27 
-< a              minloc    var      int           4    7   10   11 
----
-> a              sort      array    int        19 24 25 26 27 
-> a              minloc    array    int         4  7 10 11 
-453d452
-< x              main      var      void         36   39   42 
-455c454
-< x                        array    int           2 
----
-> x                        array    int         2 36 39 42 
-458a458,459
-> Checking for main...
-> 
-461c462,538
-< Type Checking Finished
----
-> Semantic analysis finished
+462a463,538
 > * C- Compilation to 3 Address Intermediate Code
 > 
 >     minloc:
