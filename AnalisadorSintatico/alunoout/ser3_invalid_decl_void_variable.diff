@@ -1,0 +1,19 @@
+24a25,42
+> 
+> Building Symbol Table...
+> 
+> Symbol table:
+> 
+> Variable Name  Scope     ID Type  Data Type  Line Numbers             
+> -------------  --------  -------  ---------  -------------------------
+> main                     fun      void        1 
+> input                    fun      int        
+> a              main      var      void        3 
+> output                   fun      void       
+> 
+> Checking for main...
+> 
+> Checking types...
+> Semantic error at line 3: variable declared void
+> 
+> Semantic analysis finished

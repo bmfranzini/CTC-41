@@ -1,9 +1,5 @@
 {
     "files.associations": {
-        "parser.h": "c",
-        "typeinfo": "c",
-        "util.h": "c",
-        "analyze.h": "c",
-        "globals.h": "c"
+        "parser.h": "c"
     }
 }

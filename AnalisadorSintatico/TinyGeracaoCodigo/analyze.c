@@ -12,7 +12,7 @@
 
 /* counter for variable memory locations */
 static int location = 0;
-StackScope stackSavedString;
+
 /* Procedure traverse is a generic recursive 
  * syntax tree traversal routine:
  * it applies preProc in preorder and postProc 

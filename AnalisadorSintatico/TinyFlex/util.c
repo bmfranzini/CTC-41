@@ -168,23 +168,6 @@ void printTree( TreeNode * tree )
           break;
       }
     }
-    else if (tree->nodekind==DecK)
-    { switch (tree->kind.dec) {
-        case OpK:
-          fprintf(listing,"Op: ");
-          printToken(tree->attr.op,"\0");
-          break;
-        case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
-          break;
-        case VarDecK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
-          break;
-        default:
-          fprintf(listing,"Unknown DecK kind\n");
-          break;
-      }
-    }
     else fprintf(listing,"Unknown node kind\n");
     for (i=0;i<MAXCHILDREN;i++)
          printTree(tree->child[i]);
