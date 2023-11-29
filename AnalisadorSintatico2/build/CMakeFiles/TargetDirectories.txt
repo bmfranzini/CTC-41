@@ -1,0 +1,6 @@
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/mylex.dir
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/runmylex.dir
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/rundiff.dir
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/ddiff.dir
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/edit_cache.dir
+/home/rodrigo/CTC-41/AnalisadorSintatico/build/CMakeFiles/rebuild_cache.dir
