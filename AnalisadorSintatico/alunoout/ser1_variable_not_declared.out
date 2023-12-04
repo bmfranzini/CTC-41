@@ -37,3 +37,20 @@ Syntax tree:
       Assign:
         Id: b
         Id: a
+
+Building Symbol Table...
+
+Semantic error at line 4: 'b' was not declared in this scope
+
+
+Symbol table:
+
+Variable Name  Scope     ID Type  Data Type  Line Numbers 
+-------------  --------  -------  ---------  -------------------------
+input                    fun      int        
+a              exemplo   var      int           3    4 
+exemplo                  fun      void          1 
+output                   fun      void       
+
+Checking for main...
+Semantic error: undefined reference to 'main'
